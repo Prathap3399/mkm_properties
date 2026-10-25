@@ -1,0 +1,76 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Project {
+  id                 String    @id @default(uuid())
+  name               String
+  slug               String    @unique
+  location           String
+  description        String
+  coverImageUrl      String
+  galleryUrls        String?   // JSON array of image URLs
+  videoUrl           String?
+  brochureUrl        String?
+  priceLabel         String?
+  approvalStatus     String?
+  availabilityStatus String    @default("Available") // Available, Coming Soon, Sold Out, Unpublished
+  isPublished        Int       @default(1)
+  plotSizes          String?
+  roadAccess         String?
+  nearbyLandmarks    String?
+  amenities          String?   // JSON array of amenities
+  mapUrl             String?
+  createdAt          String
+  updatedAt          String
+  enquiries          Enquiry[]
+}
+
+model Enquiry {
+  id                   String     @id @default(uuid())
+  name                 String
+  phone                String
+  email                String?
+  projectId            String?
+  project              Project?   @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  purpose              String     // "Build a House" | "Investment" | "Both"
+  budget               String?
+  preferredLocation    String?
+  purchaseTimeline     String?
+  preferredVisitDate   String?
+  message              String?
+  status               String     @default("NEW") // NEW, CONTACTED, INTERESTED, SITE_VISIT, FOLLOW_UP, BOOKED, NOT_INTERESTED
+  source               String?    @default("Website")
+  utmSource            String?
+  utmMedium            String?
+  utmCampaign          String?
+  utmContent           String?
+  utmTerm              String?
+  consentAt            String
+  privacyPolicyVersion String     @default("v1.0")
+  createdAt            String
+  updatedAt            String
+  followUps            FollowUp[]
+}
+
+model FollowUp {
+  id             String   @id @default(uuid())
+  enquiryId      String
+  enquiry        Enquiry  @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  note           String
+  nextFollowUpAt String?
+  createdBy      String   @default("PRATHAP (Admin)")
+  createdAt      String
+}
+
+model AdminUser {
+  id           String @id @default(uuid())
+  email        String @unique
+  passwordHash String
+  role         String @default("admin")
+  createdAt    String
+}
