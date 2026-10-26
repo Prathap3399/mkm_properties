@@ -4,16 +4,10 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  Users,
   Building2,
   LogOut,
-  LayoutDashboard,
-  ShieldCheck,
   ExternalLink,
-  FolderDown,
-  FileEdit,
-  Settings,
-  UserCheck
+  Calculator
 } from 'lucide-react';
 
 export default function AdminNav({ userEmail }: { userEmail: string }) {
@@ -23,7 +17,7 @@ export default function AdminNav({ userEmail }: { userEmail: string }) {
   const handleLogout = async () => {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
-      router.push('/login');
+      router.push('/admin/login');
       router.refresh();
     } catch (err) {
       console.error('Logout error:', err);
@@ -31,13 +25,8 @@ export default function AdminNav({ userEmail }: { userEmail: string }) {
   };
 
   const navLinks = [
-    { href: '/admin', label: 'Overview', icon: LayoutDashboard },
-    { href: '/admin/leads', label: 'Leads', icon: Users },
-    { href: '/admin/users', label: 'Users', icon: UserCheck },
-    { href: '/admin/projects', label: 'Projects', icon: Building2 },
-    { href: '/admin/documents', label: 'Documents', icon: FolderDown },
-    { href: '/admin/content', label: 'Content', icon: FileEdit },
-    { href: '/admin/settings', label: 'Settings', icon: Settings }
+    { href: '/admin/projects', label: 'Projects View', icon: Building2 },
+    { href: '/admin/calculator', label: 'Price Calculator', icon: Calculator }
   ];
 
   return (

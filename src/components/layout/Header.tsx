@@ -9,14 +9,9 @@ import {
   Menu,
   X,
   ArrowUpRight,
-  Lock,
   User,
   LogOut,
-  FolderDown,
-  BookOpen,
-  LayoutDashboard,
-  Building2,
-  ShieldCheck
+  Lock
 } from 'lucide-react';
 
 const WHATSAPP_URL =
@@ -77,33 +72,23 @@ export default function Header() {
   };
 
   // Determine navigation links based on user status
-  const isApprovedClient = sessionUser && (sessionUser.status === 'APPROVED' || sessionUser.role === 'admin');
   const isAdmin = sessionUser && sessionUser.role === 'admin';
 
-  let navLinks: { href: string; label: string; icon?: any }[] = [];
+  let navLinks: { href: string; label: string; icon?: React.ComponentType<{ className?: string }> }[] = [];
 
   if (isAdmin) {
     navLinks = [
-      { href: '/admin', label: 'Admin Hub', icon: LayoutDashboard },
-      { href: '/admin/leads', label: 'Leads' },
-      { href: '/admin/users', label: 'Users' },
-      { href: '/projects', label: 'Projects View' },
-      { href: '/documents', label: 'Documents' },
+      { href: '/admin/projects', label: 'Projects View' },
+      { href: '/admin/calculator', label: 'Price Calculator' },
       { href: '/', label: 'Public Site' }
     ];
-  } else if (isApprovedClient) {
-    navLinks = [
-      { href: '/dashboard', label: 'Home' },
-      { href: '/projects', label: 'Projects' },
-      { href: '/documents', label: 'Download Documents' },
-      { href: '/property-guidance', label: 'Property Guidance' },
-      { href: '/', label: 'Site Visit' }
-    ];
   } else {
-    // Strictly minimal public navigation per Prompt Section 4: Site Visit | Who We Are | Contact
+    // Public navigation - projects section removed from public site
     navLinks = [
-      { href: '/', label: 'Site Visit' },
+      { href: '/#offerings', label: 'Offerings' },
+      { href: '/#why-us', label: 'Why Choose Us' },
       { href: '/about', label: 'Who We Are' },
+      { href: '/#site-visit', label: 'Site Visit' },
       { href: '/contact', label: 'Contact' }
     ];
   }
@@ -113,7 +98,7 @@ export default function Header() {
       <div className="container-x">
         <div className="flex h-[4.5rem] items-center justify-between gap-6">
           {/* Brand */}
-          <Link href={isApprovedClient ? '/dashboard' : '/'} className="group flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
+          <Link href="/" className="group flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
             <span className="logo-mark f-display transition-transform duration-300 group-hover:rotate-[-4deg]">
               MKM
             </span>
@@ -147,15 +132,12 @@ export default function Header() {
 
           {/* Desktop actions */}
           <div className="hidden items-center gap-4 lg:flex">
-            {isApprovedClient ? (
+            {isAdmin ? (
               <div className="flex items-center gap-3">
-                <Link
-                  href="/profile"
-                  className="flex items-center gap-1.5 rounded-full border border-[var(--forest)] bg-[var(--paper-2)] px-3 py-1.5 text-xs font-semibold text-[var(--forest)] hover:bg-[var(--paper)] transition-colors"
-                >
+                <div className="flex items-center gap-1.5 rounded-full border border-[var(--forest)] bg-[var(--paper-2)] px-3 py-1.5 text-xs font-semibold text-[var(--forest)]">
                   <User className="h-3.5 w-3.5 text-[var(--forest)]" />
-                  <span className="max-w-[120px] truncate">{sessionUser?.name || 'Account'}</span>
-                </Link>
+                  <span className="max-w-[120px] truncate">{sessionUser?.name || 'Admin'}</span>
+                </div>
                 <button
                   onClick={handleLogout}
                   className="flex items-center gap-1 text-xs text-[var(--ink-soft)] hover:text-red-700 transition-colors cursor-pointer"
@@ -167,13 +149,6 @@ export default function Header() {
               </div>
             ) : (
               <div className="flex items-center gap-3">
-                <Link
-                  href="/login"
-                  className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-[var(--forest)] hover:text-[var(--gold)] transition-colors px-2 py-1"
-                >
-                  <Lock className="h-3 w-3" />
-                  <span>Client Login</span>
-                </Link>
                 <a
                   href="tel:9629048171"
                   className="f-mono flex items-center gap-1.5 text-xs font-medium text-[var(--forest)] hover:text-[var(--gold)]"
@@ -191,18 +166,20 @@ export default function Header() {
                   <MessageSquare className="h-3.5 w-3.5 text-[var(--gold-bright)]" />
                   <span>WhatsApp</span>
                 </a>
+                <Link
+                  href="/admin/login"
+                  className="btn btn-outline btn-sm !py-2 !px-3.5 text-xs font-bold border-[var(--forest)] text-[var(--forest)] hover:bg-[var(--forest)] hover:text-white transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                  title="Admin Portal Login"
+                >
+                  <Lock className="h-3.5 w-3.5" />
+                  <span>Admin Login</span>
+                </Link>
               </div>
             )}
           </div>
 
           {/* Mobile actions */}
           <div className="flex items-center gap-2 md:hidden">
-            {!isApprovedClient && (
-              <Link href="/login" className="btn btn-outline btn-sm !px-2.5 text-xs">
-                <Lock className="h-3 w-3" />
-                <span>Login</span>
-              </Link>
-            )}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -234,12 +211,12 @@ export default function Header() {
             ))}
 
             <div className="grid gap-2.5 pb-3 pt-5">
-              {isApprovedClient ? (
+              {isAdmin ? (
                 <>
                   <div className="flex items-center justify-between py-2 text-xs text-[var(--ink-soft)] border-b border-[var(--line)]">
                     <span>Logged in as: <strong>{sessionUser?.name}</strong></span>
                     <span className="badge badge-sm bg-emerald-100 text-emerald-900 font-bold px-2 py-0.5 rounded">
-                      APPROVED
+                      ADMIN
                     </span>
                   </div>
                   <button
@@ -255,14 +232,6 @@ export default function Header() {
                 </>
               ) : (
                 <>
-                  <Link
-                    href="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="btn btn-outline"
-                  >
-                    <Lock className="h-4 w-4" />
-                    <span>Client Portal Login</span>
-                  </Link>
                   <a href="tel:9629048171" className="btn btn-primary">
                     <Phone className="h-4 w-4 text-[var(--gold-bright)]" />
                     <span>Call PRATHAP — 96290 48171</span>
@@ -271,6 +240,14 @@ export default function Header() {
                     <MessageSquare className="h-4 w-4" />
                     <span>WhatsApp Enquiry</span>
                   </a>
+                  <Link
+                    href="/admin/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="btn btn-outline w-full flex items-center justify-center gap-2 mt-1 border-[var(--forest)] text-[var(--forest)] font-bold"
+                  >
+                    <Lock className="h-4 w-4" />
+                    <span>Admin Portal Login</span>
+                  </Link>
                 </>
               )}
             </div>

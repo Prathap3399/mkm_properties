@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import { requireApprovedUser } from '@/lib/auth/session';
 import {
   BookOpen,
   ShieldCheck,
@@ -17,7 +16,7 @@ import {
 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Property Guidance & Due-Diligence Guide · MKM Properties | Protected Access',
+  title: 'Property Guidance & Due-Diligence Guide · MKM Properties | Trichy',
   description:
     'Comprehensive buyer guide on evaluating residential plots in Trichy. Understand DTCP vs Panchayath approval, RERA verification, parent documents, road widths, and registration process.'
 };
@@ -105,10 +104,7 @@ const GUIDES = [
 
 export const instant = false;
 
-export default async function PropertyGuidancePage() {
-  // Enforce server-side authorization check!
-  const session = await requireApprovedUser('/login?unauthorized=true&from=/property-guidance');
-
+export default function PropertyGuidancePage() {
   return (
     <div className="flex min-h-screen flex-col bg-[var(--paper)] py-12 sm:py-16">
       <div className="container-x space-y-12">
@@ -116,7 +112,7 @@ export default async function PropertyGuidancePage() {
         <div className="border-b border-[var(--line-strong)] pb-8 max-w-3xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--forest)]/20 bg-white/60 px-3.5 py-1 text-xs font-mono font-semibold uppercase tracking-wider text-[var(--forest)] mb-4">
             <ShieldCheck className="h-3.5 w-3.5 text-[var(--gold)]" />
-            <span>Authorized Buyer Education · {session.name}</span>
+            <span>Buyer Due Diligence · Trichy</span>
           </div>
 
           <h1 className="f-display text-3xl sm:text-5xl font-extrabold text-[var(--ink)] leading-tight">

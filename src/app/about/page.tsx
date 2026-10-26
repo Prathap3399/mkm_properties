@@ -65,38 +65,55 @@ export default function AboutPage() {
 
             <div className="lg:col-span-6">
               <div className="rounded-2xl border border-[var(--line-strong)] bg-[var(--card)] p-8 shadow-sm space-y-6">
-                <h3 className="f-display text-xl font-bold text-[var(--ink)]">
-                  The MKM 5-Point Buyer Commitment
-                </h3>
-                <ul className="space-y-4 text-xs sm:text-sm text-[var(--ink)]">
+                <div>
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--gold)] font-bold block">
+                    Our Core Offerings
+                  </span>
+                  <h3 className="f-display text-xl font-bold text-[var(--ink)] mt-1">
+                    Why Choose MKM Properties?
+                  </h3>
+                </div>
+                <ul className="space-y-3.5 text-xs sm:text-sm text-[var(--ink)]">
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-[var(--forest)] shrink-0 mt-0.5" />
                     <span>
-                      <strong>100% Verified Legal Documents:</strong> Every layout has clear DTCP/RERA approvals, encumbrance certificates (EC), and verified parent titles.
+                      <strong>Premium Residential Plots:</strong> Carefully selected plots in high-growth corridors suitable for home construction and investment.
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-[var(--forest)] shrink-0 mt-0.5" />
                     <span>
-                      <strong>Transparent Direct Promoter Pricing:</strong> No hidden commission, no inflated price tags. You pay the exact developer rate.
+                      <strong>On-Road Properties:</strong> Direct connectivity to main roads with 30ft–40ft wide blacktop avenues.
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-[var(--forest)] shrink-0 mt-0.5" />
                     <span>
-                      <strong>Free Guided Site Visits:</strong> Private round-trip cab pickup anywhere in Trichy so you and your family can inspect comfortably.
+                      <strong>DTCP / RERA Approved Projects:</strong> Statutory clearances and approval blueprints verified project-wise.
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-[var(--forest)] shrink-0 mt-0.5" />
                     <span>
-                      <strong>Potable Water &amp; Soil Check:</strong> We verify sweet water level and soil suitability for house construction.
+                      <strong>Bank-Approved Projects:</strong> Eligible for financing from applicable banks, subject to bank terms and customer eligibility.
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-[var(--forest)] shrink-0 mt-0.5" />
                     <span>
-                      <strong>Controlled Access Protection:</strong> Full architectural layouts and price sheets are provided exclusively to authorized clients.
+                      <strong>Ready-to-Build Plots:</strong> Demarcated boundary stones, sweet drinking water, and immediate power connectivity.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-[var(--forest)] shrink-0 mt-0.5" />
+                    <span>
+                      <strong>வீடு கட்டவும், முதலீடு செய்யவும் ஏற்ற மனைகள்:</strong> Suitable for both family home construction and disciplined long-term investment.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-emerald-700 shrink-0 mt-0.5" />
+                    <span>
+                      <strong>முகவர் கட்டணம் முற்றிலும் இலவசம்:</strong> Zero brokerage and zero agent fees for customers. Direct promoter pricing.
                     </span>
                   </li>
                 </ul>

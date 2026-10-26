@@ -16,11 +16,40 @@ export interface ProjectRecord {
   approvalStatus?: string | null;
   availabilityStatus: 'Available' | 'Coming Soon' | 'Sold Out' | 'Unpublished';
   isPublished: number;
+  priceBrochureUrl?: string | null;
   plotSizes?: string | null;
   roadAccess?: string | null;
   nearbyLandmarks?: string | null;
   amenities?: string | null;
   mapUrl?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProjectSectionRecord {
+  id: string;
+  projectId: string;
+  sectionCode: string; // 'A', 'B', 'C', 'D'
+  sectionName: string;
+  pricePerSqFt: number;
+  roadWidth?: string | null;
+  description?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LayoutPlotRecord {
+  id: string;
+  projectId: string;
+  sectionCode: string; // 'A', 'B', 'C', 'D'
+  plotNumber: string;
+  areaSqFt: number;
+  dimensions?: string | null;
+  facing?: string | null;
+  roadWidth?: string | null;
+  status: 'Available' | 'Booked' | 'Sold';
+  cornerPremiumPercent?: number | null;
+  notes?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -401,6 +430,97 @@ export async function ensureSeeded() {
         [c.key, c.title, c.content, now]
       );
     }
+  }
+
+  // 6. Ensure ProjectSection and LayoutPlot are seeded for layout pricing
+  try {
+    const sectionCount = await db.get<{ count: number }>('SELECT count(*) as count FROM ProjectSection');
+    if (!sectionCount || sectionCount.count === 0) {
+      const allProjs = await db.all<ProjectRecord>('SELECT * FROM Project');
+      for (const proj of allProjs) {
+        let rateA = 1650;
+        let rateB = 1450;
+        let rateC = 1350;
+        let rateD = 1200;
+
+        if (proj.slug === 'ritz-landmark-avenue') {
+          rateA = 2100; rateB = 1850; rateC = 1700; rateD = 1550;
+        } else if (proj.slug === 'rainbow-city') {
+          rateA = 1400; rateB = 1250; rateC = 1150; rateD = 1050;
+        } else if (proj.slug === 'elegant-avenue') {
+          rateA = 1850; rateB = 1650; rateC = 1500; rateD = 1350;
+        } else if (proj.slug === 'samayapuram-highway-property') {
+          rateA = 2800; rateB = 2400; rateC = 2100; rateD = 1900;
+        }
+
+        const sections = [
+          { code: 'A', name: 'Section A (40ft Main Entrance Road)', rate: rateA, road: '40 ft Blacktop Avenue', desc: 'Prime entrance corridor facing plots with maximum road width and highest commercial & residential value.' },
+          { code: 'B', name: 'Section B (30ft Central Avenue)', rate: rateB, road: '30 ft Bitumen Road', desc: 'Central residential street with potable groundwater and immediate house construction readiness.' },
+          { code: 'C', name: 'Section C (Park & OSR Adjacent)', rate: rateC, road: '30 ft Tar Road', desc: 'Serene plots bordering community park area, walking track, and avenue trees.' },
+          { code: 'D', name: 'Section D (Interior Peaceful Belts)', rate: rateD, road: '30 ft Bitumen Road', desc: 'Peaceful residential pocket ideal for budget-conscious families planning long-term construction.' }
+        ];
+
+        for (const s of sections) {
+          const secId = crypto.randomUUID();
+          await db.run(
+            `INSERT INTO ProjectSection (id, projectId, sectionCode, sectionName, pricePerSqFt, roadWidth, description, createdAt, updatedAt)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [secId, proj.id, s.code, s.name, s.rate, s.road, s.desc, now, now]
+          );
+        }
+
+        const samplePlots = [
+          { plot: '1', sec: 'A', area: 1500, dim: '30 x 50 ft', facing: 'East Facing', road: '40 ft', status: 'Available', corner: 5, notes: 'Prime corner plot near entrance gate' },
+          { plot: '2', sec: 'A', area: 1200, dim: '30 x 40 ft', facing: 'East Facing', road: '40 ft', status: 'Available', corner: 0, notes: 'Direct road access' },
+          { plot: '3', sec: 'A', area: 1200, dim: '30 x 40 ft', facing: 'North Facing', road: '40 ft', status: 'Available', corner: 0, notes: 'Vastu compliant North entrance' },
+          { plot: '4', sec: 'A', area: 1800, dim: '30 x 60 ft', facing: 'North Facing', road: '40 ft', status: 'Available', corner: 0, notes: 'Spacious 1.5 ground plot' },
+          { plot: '5', sec: 'A', area: 2400, dim: '40 x 60 ft', facing: 'East Facing', road: '40 ft', status: 'Booked', corner: 0, notes: 'Reserved for family villa' },
+          { plot: '6', sec: 'A', area: 1500, dim: '30 x 50 ft', facing: 'Corner (East-North)', road: '40 ft', status: 'Available', corner: 5, notes: 'Dual-road ventilated plot' },
+          { plot: '7', sec: 'B', area: 1200, dim: '30 x 40 ft', facing: 'East Facing', road: '30 ft', status: 'Available', corner: 0, notes: 'Levelled sweet groundwater area' },
+          { plot: '8', sec: 'B', area: 1200, dim: '30 x 40 ft', facing: 'North Facing', road: '30 ft', status: 'Available', corner: 0, notes: 'Ready for immediate building plan sanction' },
+          { plot: '9', sec: 'B', area: 1500, dim: '30 x 50 ft', facing: 'East Facing', road: '30 ft', status: 'Available', corner: 0, notes: 'Ideal for 3BHK individual home' },
+          { plot: '10', sec: 'B', area: 1200, dim: '30 x 40 ft', facing: 'South Facing', road: '30 ft', status: 'Available', corner: 0, notes: 'Clear title & spot registration' },
+          { plot: '11', sec: 'B', area: 1500, dim: '30 x 50 ft', facing: 'North Facing', road: '30 ft', status: 'Available', corner: 0, notes: '30ft street light pole equipped' },
+          { plot: '12', sec: 'B', area: 1800, dim: '30 x 60 ft', facing: 'Corner (North-East)', road: '30 ft', status: 'Available', corner: 5, notes: 'Premium corner location' },
+          { plot: '13', sec: 'B', area: 1200, dim: '30 x 40 ft', facing: 'East Facing', road: '30 ft', status: 'Sold', corner: 0, notes: 'Registered sale deed issued' },
+          { plot: '14', sec: 'B', area: 1200, dim: '30 x 40 ft', facing: 'North Facing', road: '30 ft', status: 'Available', corner: 0, notes: 'Bank loan pre-cleared' },
+          { plot: '15', sec: 'C', area: 1200, dim: '30 x 40 ft', facing: 'East Facing', road: '30 ft', status: 'Available', corner: 0, notes: 'Overlooks community park' },
+          { plot: '16', sec: 'C', area: 1500, dim: '30 x 50 ft', facing: 'North Facing', road: '30 ft', status: 'Available', corner: 0, notes: 'Park reserve boundary' },
+          { plot: '17', sec: 'C', area: 1200, dim: '30 x 40 ft', facing: 'West Facing', road: '30 ft', status: 'Available', corner: 0, notes: 'Pleasant evening shade' },
+          { plot: '18', sec: 'C', area: 1200, dim: '30 x 40 ft', facing: 'North Facing', road: '30 ft', status: 'Available', corner: 0, notes: 'Opposite open space reserve' },
+          { plot: '19', sec: 'C', area: 2000, dim: '40 x 50 ft', facing: 'East Facing', road: '30 ft', status: 'Available', corner: 0, notes: 'Large garden home plot' },
+          { plot: '20', sec: 'C', area: 1200, dim: '30 x 40 ft', facing: 'Corner (East-South)', road: '30 ft', status: 'Available', corner: 5, notes: 'Corner ventilation' },
+          { plot: '21', sec: 'D', area: 1000, dim: '25 x 40 ft', facing: 'North Facing', road: '30 ft', status: 'Available', corner: 0, notes: 'Compact budget residential plot' },
+          { plot: '22', sec: 'D', area: 1200, dim: '30 x 40 ft', facing: 'East Facing', road: '30 ft', status: 'Available', corner: 0, notes: 'Direct owner registration' },
+          { plot: '23', sec: 'D', area: 1200, dim: '30 x 40 ft', facing: 'South Facing', road: '30 ft', status: 'Available', corner: 0, notes: 'Serene interior avenue' },
+          { plot: '24', sec: 'D', area: 1500, dim: '30 x 50 ft', facing: 'North Facing', road: '30 ft', status: 'Available', corner: 0, notes: 'End-of-lane quiet plot' }
+        ];
+
+        for (const p of samplePlots) {
+          await db.run(
+            `INSERT INTO LayoutPlot (id, projectId, sectionCode, plotNumber, areaSqFt, dimensions, facing, roadWidth, status, cornerPremiumPercent, notes, createdAt, updatedAt)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+              crypto.randomUUID(),
+              proj.id,
+              p.sec,
+              p.plot,
+              p.area,
+              p.dim,
+              p.facing,
+              p.road,
+              p.status,
+              p.corner,
+              p.notes,
+              now,
+              now
+            ]
+          );
+        }
+      }
+    }
+  } catch (secErr: any) {
+    console.warn('[DB Migration] Section/Plot seed notice:', secErr.message);
   }
 }
 
@@ -926,4 +1046,152 @@ export async function getAdminByEmail(email: string) {
   await ensureSeeded();
   const db = getDatabase();
   return db.get<AdminUserRecord>('SELECT * FROM AdminUser WHERE LOWER(email) = LOWER(?)', [email.trim()]);
+}
+
+// ================= SECTIONS & PLOTS QUERIES =================
+export async function getSectionsByProjectId(projectId: string) {
+  await ensureSeeded();
+  const db = getDatabase();
+  return db.all<ProjectSectionRecord>(
+    'SELECT * FROM ProjectSection WHERE projectId = ? ORDER BY sectionCode ASC',
+    [projectId]
+  );
+}
+
+export async function getPlotsByProjectId(projectId: string, sectionCode?: string) {
+  await ensureSeeded();
+  const db = getDatabase();
+  if (sectionCode && sectionCode !== 'ALL') {
+    return db.all<LayoutPlotRecord>(
+      'SELECT * FROM LayoutPlot WHERE projectId = ? AND sectionCode = ? ORDER BY CAST(plotNumber AS INTEGER), plotNumber ASC',
+      [projectId, sectionCode]
+    );
+  }
+  return db.all<LayoutPlotRecord>(
+    'SELECT * FROM LayoutPlot WHERE projectId = ? ORDER BY sectionCode ASC, CAST(plotNumber AS INTEGER), plotNumber ASC',
+    [projectId]
+  );
+}
+
+export async function getPlotById(id: string) {
+  await ensureSeeded();
+  const db = getDatabase();
+  return db.get<LayoutPlotRecord>('SELECT * FROM LayoutPlot WHERE id = ?', [id]);
+}
+
+export async function createOrUpdateSection(data: Partial<ProjectSectionRecord> & { projectId: string; sectionCode: string }) {
+  await ensureSeeded();
+  const db = getDatabase();
+  const now = new Date().toISOString();
+  const existing = await db.get<ProjectSectionRecord>(
+    'SELECT * FROM ProjectSection WHERE projectId = ? AND sectionCode = ?',
+    [data.projectId, data.sectionCode]
+  );
+
+  if (existing) {
+    await db.run(
+      `UPDATE ProjectSection SET sectionName = ?, pricePerSqFt = ?, roadWidth = ?, description = ?, updatedAt = ? WHERE id = ?`,
+      [
+        data.sectionName ?? existing.sectionName,
+        data.pricePerSqFt ?? existing.pricePerSqFt,
+        data.roadWidth ?? existing.roadWidth,
+        data.description ?? existing.description,
+        now,
+        existing.id
+      ]
+    );
+    return db.get<ProjectSectionRecord>('SELECT * FROM ProjectSection WHERE id = ?', [existing.id]);
+  } else {
+    const id = crypto.randomUUID();
+    await db.run(
+      `INSERT INTO ProjectSection (id, projectId, sectionCode, sectionName, pricePerSqFt, roadWidth, description, createdAt, updatedAt)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        id,
+        data.projectId,
+        data.sectionCode,
+        data.sectionName || `Section ${data.sectionCode}`,
+        data.pricePerSqFt || 1500,
+        data.roadWidth || '30 ft',
+        data.description || '',
+        now,
+        now
+      ]
+    );
+    return db.get<ProjectSectionRecord>('SELECT * FROM ProjectSection WHERE id = ?', [id]);
+  }
+}
+
+export async function createPlot(data: Omit<LayoutPlotRecord, 'id' | 'createdAt' | 'updatedAt'>) {
+  await ensureSeeded();
+  const db = getDatabase();
+  const now = new Date().toISOString();
+  const id = crypto.randomUUID();
+  await db.run(
+    `INSERT INTO LayoutPlot (id, projectId, sectionCode, plotNumber, areaSqFt, dimensions, facing, roadWidth, status, cornerPremiumPercent, notes, createdAt, updatedAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      id,
+      data.projectId,
+      data.sectionCode,
+      data.plotNumber,
+      data.areaSqFt,
+      data.dimensions || null,
+      data.facing || 'East Facing',
+      data.roadWidth || '30 ft',
+      data.status || 'Available',
+      data.cornerPremiumPercent || 0,
+      data.notes || null,
+      now,
+      now
+    ]
+  );
+  return db.get<LayoutPlotRecord>('SELECT * FROM LayoutPlot WHERE id = ?', [id]);
+}
+
+export async function updatePlot(id: string, data: Partial<LayoutPlotRecord>) {
+  await ensureSeeded();
+  const db = getDatabase();
+  const now = new Date().toISOString();
+  const existing = await getPlotById(id);
+  if (!existing) return null;
+
+  await db.run(
+    `UPDATE LayoutPlot SET
+      sectionCode = ?, plotNumber = ?, areaSqFt = ?, dimensions = ?, facing = ?,
+      roadWidth = ?, status = ?, cornerPremiumPercent = ?, notes = ?, updatedAt = ?
+     WHERE id = ?`,
+    [
+      data.sectionCode ?? existing.sectionCode,
+      data.plotNumber ?? existing.plotNumber,
+      data.areaSqFt ?? existing.areaSqFt,
+      data.dimensions ?? existing.dimensions,
+      data.facing ?? existing.facing,
+      data.roadWidth ?? existing.roadWidth,
+      data.status ?? existing.status,
+      data.cornerPremiumPercent ?? existing.cornerPremiumPercent,
+      data.notes ?? existing.notes,
+      now,
+      id
+    ]
+  );
+  return getPlotById(id);
+}
+
+export async function deletePlot(id: string) {
+  await ensureSeeded();
+  const db = getDatabase();
+  const res = await db.run('DELETE FROM LayoutPlot WHERE id = ?', [id]);
+  return Boolean(res.changes && res.changes > 0);
+}
+
+export async function updateProjectBrochures(id: string, brochureUrl: string, priceBrochureUrl?: string) {
+  await ensureSeeded();
+  const db = getDatabase();
+  const now = new Date().toISOString();
+  await db.run(
+    'UPDATE Project SET brochureUrl = ?, priceBrochureUrl = COALESCE(?, priceBrochureUrl), updatedAt = ? WHERE id = ?',
+    [brochureUrl, priceBrochureUrl || null, now, id]
+  );
+  return getProjectById(id);
 }

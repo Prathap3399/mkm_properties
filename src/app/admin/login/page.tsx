@@ -50,7 +50,7 @@ export default function AdminLoginPage() {
             MKM Properties Admin Portal
           </h2>
           <p className="text-xs sm:text-sm text-emerald-200">
-            Sign in to manage Trichy real estate enquiries and projects
+            Sign in to access projects and layout price calculator
           </p>
         </div>
 
@@ -121,7 +121,7 @@ export default function AdminLoginPage() {
                   <span>Verifying Credentials...</span>
                 </>
               ) : (
-                <span>Sign In to Dashboard</span>
+                <span>Sign In to Admin Portal</span>
               )}
             </button>
           </form>

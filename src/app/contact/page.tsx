@@ -163,6 +163,14 @@ export default function ContactPage() {
                       </span>
                     </div>
                   </div>
+
+                  {/* Zero brokerage highlight */}
+                  <div className="rounded-lg border border-emerald-200 bg-emerald-50/60 p-3 text-xs text-emerald-950">
+                    <span className="font-bold block">முகவர் கட்டணம் முற்றிலும் இலவசம்</span>
+                    <span className="text-[11px] text-emerald-900 block mt-0.5">
+                      Zero brokerage and zero agent fees for all property enquiries and site visits.
+                    </span>
+                  </div>
                 </div>
 
                 <div className="pt-2 border-t border-[var(--line)]">

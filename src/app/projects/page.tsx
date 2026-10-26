@@ -1,34 +1,32 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import { requireApprovedUser } from '@/lib/auth/session';
+import { connection } from 'next/server';
 import { getAllProjects } from '@/lib/db/repository';
 import ProjectsCatalogClient from '@/components/projects/ProjectsCatalogClient';
-import { Phone, ShieldCheck, Lock } from 'lucide-react';
+import { Phone, Compass } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Client Projects Catalog · MKM Properties | Protected Access',
+  title: 'Residential Layouts & Projects Portfolio · MKM Properties | Trichy',
   description:
-    'Authorized project catalog for verified clients. DTCP approvals, exact plot dimensions, and direct promoter pricing in Trichy.'
+    'Explore verified residential layouts, DTCP approvals, exact plot dimensions, and direct promoter pricing in Trichy.'
 };
 
 export const instant = false;
 
 export default async function ProjectsPage() {
-  // Enforce strict backend server-side authorization!
-  const session = await requireApprovedUser('/login?unauthorized=true&from=/projects');
-
+  await connection();
   const projects = await getAllProjects({ publishedOnly: true });
 
   return (
     <div className="min-h-screen bg-[var(--paper)]">
-      {/* Protected Header */}
+      {/* Header */}
       <section className="relative overflow-hidden border-b border-[var(--line)] py-14 sm:py-20 bg-gradient-to-b from-[var(--paper-2)] to-[var(--paper)]">
         <div className="container-x">
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
             <div className="max-w-3xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-[var(--forest)]/20 bg-white/60 px-3 py-1 text-xs font-mono font-semibold uppercase tracking-wider text-[var(--forest)] mb-4">
-                <ShieldCheck className="h-3.5 w-3.5 text-[var(--gold)]" />
-                <span>Authorized Client Catalog · {session.name}</span>
+                <Compass className="h-3.5 w-3.5 text-[var(--gold)]" />
+                <span>VERIFIED RESIDENTIAL LAYOUTS • TRICHY</span>
               </div>
               <h1 className="f-display text-3xl sm:text-5xl font-extrabold text-[var(--ink)] leading-tight">
                 Residential Layouts &amp; <em className="text-[var(--forest)] font-serif">Plots Portfolio</em>

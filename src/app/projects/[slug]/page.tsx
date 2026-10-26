@@ -11,13 +11,12 @@ import {
   Navigation,
   ArrowLeft
 } from 'lucide-react';
+import { connection } from 'next/server';
 import { getProjectBySlug, getAllProjects } from '@/lib/db/repository';
 import ProjectVideo from '@/components/projects/ProjectVideo';
 import BrochureViewer from '@/components/projects/BrochureViewer';
 import EnquiryForm from '@/components/enquiry/EnquiryForm';
 import ProjectCard from '@/components/projects/ProjectCard';
-
-import { requireApprovedUser } from '@/lib/auth/session';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -34,11 +33,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${project.name} – Protected Layout Details | MKM Properties`,
-    description: `Authorized project information for verified clients.`,
+    title: `${project.name} – Residential Layout & Plot Details | MKM Properties`,
+    description: `Explore ${project.name} in ${project.location}, Trichy. Verified residential plots with direct promoter pricing.`,
     robots: {
-      index: false,
-      follow: false
+      index: true,
+      follow: true
     }
   };
 }
@@ -82,9 +81,8 @@ function PanelHeading({
 }
 
 export default async function ProjectDetailPage({ params }: Props) {
+  await connection();
   const { slug } = await params;
-  // Enforce strict backend server-side authorization!
-  await requireApprovedUser('/login?unauthorized=true&from=/projects/' + slug);
 
   const project = await getProjectBySlug(slug);
 

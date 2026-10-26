@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Phone, MapPin, ArrowUpRight, ShieldCheck, Lock, Mail } from 'lucide-react';
+import { Phone, MapPin, ArrowUpRight, ShieldCheck, Mail } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -33,9 +33,14 @@ export default function Footer() {
               We help prospective home builders and investors evaluate residential plots with clarity, verified title documentation, and on-ground site inspection before taking any decision.
             </p>
 
-            <div className="f-mono mt-6 flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-[var(--gold-bright)]">
-              <ShieldCheck className="h-4 w-4 shrink-0" />
-              <span>Controlled Access Portal · Verified DTCP Clearances</span>
+            <div className="f-mono mt-6 flex flex-col gap-2 text-[11px] uppercase tracking-[0.14em] text-[var(--gold-bright)]">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 shrink-0" />
+                <span>Verified DTCP &amp; RERA Clearances</span>
+              </div>
+              <div className="text-[#8a978e] normal-case tracking-normal text-xs">
+                முகவர் கட்டணம் முற்றிலும் இலவசம் · Zero brokerage for customers
+              </div>
             </div>
           </div>
 
@@ -46,7 +51,17 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 text-[15px]">
               <li>
-                <Link href="/" className="transition-colors hover:text-white">
+                <Link href="/#offerings" className="transition-colors hover:text-white">
+                  Property Offerings
+                </Link>
+              </li>
+              <li>
+                <Link href="/#why-us" className="transition-colors hover:text-white">
+                  Why Choose Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/#site-visit" className="transition-colors hover:text-white">
                   Book a Site Visit
                 </Link>
               </li>
@@ -58,12 +73,6 @@ export default function Footer() {
               <li>
                 <Link href="/contact" className="transition-colors hover:text-white">
                   Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/login" className="inline-flex items-center gap-1.5 text-[var(--gold-bright)] hover:underline">
-                  <Lock className="h-3 w-3" />
-                  <span>Approved Client Portal</span>
                 </Link>
               </li>
               <li>
@@ -111,19 +120,11 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Advisory principle note */}
-        <div className="mt-14 border-t border-white/10 pt-6 text-[12px] leading-relaxed text-[#8a978e]">
-          <p>
-            <strong className="text-[#b9c3bb]">Advisory Notice:</strong> Complete project catalogs, plot dimensions, DTCP layout blueprints, and promoter price sheets are reserved exclusively for verified and approved clients to ensure privacy, accurate site coordination, and direct relationship integrity.
-          </p>
-        </div>
-
         {/* Bottom bar */}
-        <div className="f-mono mt-6 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-6 text-[11px] uppercase tracking-[0.12em] text-[#6f7d74] sm:flex-row sm:items-center">
+        <div className="f-mono mt-14 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-6 text-[11px] uppercase tracking-[0.12em] text-[#6f7d74] sm:flex-row sm:items-center">
           <p>© 2026 MKM Properties · Tiruchirappalli</p>
           <div className="flex items-center gap-6">
             <Link href="/privacy" className="transition-colors hover:text-white">Privacy Policy</Link>
-            <Link href="/login" className="transition-colors hover:text-white">Client Login</Link>
             <Link href="/admin/login" className="transition-colors hover:text-white">Admin Access</Link>
           </div>
         </div>

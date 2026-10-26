@@ -67,6 +67,11 @@ function getLocalDatabase(): DatabaseClient {
       if (!colNames.includes('approvedUserId')) {
         db.exec("ALTER TABLE Enquiry ADD COLUMN approvedUserId TEXT;");
       }
+
+      const projectCols = (db.prepare("PRAGMA table_info(Project)").all() as { name: string }[]).map(c => c.name);
+      if (!projectCols.includes('priceBrochureUrl')) {
+        db.exec("ALTER TABLE Project ADD COLUMN priceBrochureUrl TEXT;");
+      }
     } catch (colErr: any) {
       console.warn('[DB Migration] Column update notice:', colErr.message);
     }
