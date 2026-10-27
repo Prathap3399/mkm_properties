@@ -1,131 +1,183 @@
 import React from 'react';
 import Link from 'next/link';
-import { Phone, MapPin, ArrowUpRight, ShieldCheck, Mail } from 'lucide-react';
+import { Phone, MapPin, ShieldCheck, Mail, MessageSquare, ArrowUpRight, CheckCircle2 } from 'lucide-react';
+
+const WHATSAPP_URL =
+  'https://wa.me/919629048171?text=Hello%20MKM%20Properties,%20I%20would%20like%20to%20know%20more%20about%20residential%20plots%20in%20Trichy.';
 
 export default function Footer() {
   return (
-    <footer className="relative isolate overflow-hidden bg-[var(--forest-deep)] pb-28 pt-20 text-[#d9dfd6] md:pb-12">
-      {/* Giant faint wordmark */}
-      <span
+    <footer className="relative isolate overflow-hidden bg-[#071B15] text-slate-300 pt-20 pb-28 md:pb-14 border-t border-emerald-950">
+      {/* Background Texture & Glow */}
+      <div
         aria-hidden="true"
-        className="f-display pointer-events-none absolute -bottom-10 right-[-2vw] -z-10 select-none text-[26vw] font-semibold leading-none tracking-[-0.06em] text-white/[0.035]"
-      >
-        MKM
-      </span>
+        className="pointer-events-none absolute inset-0 opacity-[0.03] [background-image:radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-20 -top-20 h-96 w-96 rounded-full bg-emerald-600/10 blur-3xl"
+      />
 
-      <div className="container-x">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-12">
-          {/* Brand & Advisory Positioning */}
-          <div className="lg:col-span-5">
-            <div className="flex items-center gap-3">
-              <span className="logo-mark f-display">MKM</span>
-              <span className="leading-none">
-                <span className="f-display block text-2xl font-semibold tracking-[-0.015em] text-white">
+      <div className="container-x relative">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+          {/* Brand & Value Statement */}
+          <div className="lg:col-span-4 space-y-6">
+            <Link href="/" className="inline-flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#0B271F] to-[#04100C] text-[#D9A838] font-bold text-base ring-1 ring-amber-400/30">
+                MKM
+              </div>
+              <div>
+                <span className="block text-xl font-bold tracking-tight text-white leading-tight">
                   MKM Properties
                 </span>
-                <span className="f-mono mt-1.5 block text-[9.5px] uppercase tracking-[0.22em] text-[var(--gold-bright)]">
-                  Trichy · Trusted Property Advisors
+                <span className="block text-[10px] font-mono uppercase tracking-widest text-[#D9A838]">
+                  Tiruchirappalli • Trusted Advisors
                 </span>
-              </span>
-            </div>
+              </div>
+            </Link>
 
-            <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-[#b9c3bb]">
-              We help prospective home builders and investors evaluate residential plots with clarity, verified title documentation, and on-ground site inspection before taking any decision.
+            <p className="text-sm leading-relaxed text-slate-300 max-w-sm">
+              We guide prospective homebuyers and investors to evaluate residential plots in Trichy with transparency, statutory DTCP/RERA verification, and complimentary on-ground site visits.
             </p>
 
-            <div className="f-mono mt-6 flex flex-col gap-2 text-[11px] uppercase tracking-[0.14em] text-[var(--gold-bright)]">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 shrink-0" />
-                <span>Verified DTCP &amp; RERA Clearances</span>
+            <div className="space-y-2 pt-2 text-xs">
+              <div className="flex items-center gap-2 text-[#D9A838] font-medium">
+                <ShieldCheck className="h-4 w-4 shrink-0 text-[#D9A838]" />
+                <span>Verified DTCP &amp; RERA Sanctioned Layouts</span>
               </div>
-              <div className="text-[#8a978e] normal-case tracking-normal text-xs">
-                முகவர் கட்டணம் முற்றிலும் இலவசம் · Zero brokerage for customers
+              <div className="flex items-center gap-2 text-emerald-400 font-medium">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
+                <span>முகவர் கட்டணம் முற்றிலும் இலவசம் • Zero Brokerage</span>
               </div>
             </div>
           </div>
 
-          {/* Quick Links (Public) */}
-          <div className="lg:col-span-3 lg:col-start-7">
-            <h4 className="f-mono mb-5 text-[11px] uppercase tracking-[0.2em] text-[var(--gold-bright)]">
-              Navigation
+          {/* Navigation Links */}
+          <div className="lg:col-span-2 lg:col-start-6">
+            <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-[#D9A838] mb-5">
+              Platform
             </h4>
-            <ul className="space-y-3 text-[15px]">
+            <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/#offerings" className="transition-colors hover:text-white">
-                  Property Offerings
+                <Link href="/#site-visit" className="text-slate-300 hover:text-white transition-colors">
+                  Book Site Visit
                 </Link>
               </li>
               <li>
-                <Link href="/#why-us" className="transition-colors hover:text-white">
+                <Link href="/#why-us" className="text-slate-300 hover:text-white transition-colors">
                   Why Choose Us
                 </Link>
               </li>
               <li>
-                <Link href="/#site-visit" className="transition-colors hover:text-white">
-                  Book a Site Visit
+                <Link href="/about" className="text-slate-300 hover:text-white transition-colors">
+                  About MKM
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="transition-colors hover:text-white">
-                  Who We Are
+                <Link href="/contact" className="text-slate-300 hover:text-white transition-colors">
+                  Contact Advisor
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="transition-colors hover:text-white">
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy" className="transition-colors hover:text-white">
-                  Privacy &amp; Data Policy
+                <Link href="/privacy" className="text-slate-300 hover:text-white transition-colors">
+                  Privacy Policy
                 </Link>
               </li>
             </ul>
           </div>
 
+          {/* Prime Corridors */}
+          <div className="lg:col-span-3">
+            <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-[#D9A838] mb-5">
+              Trichy Corridors
+            </h4>
+            <ul className="space-y-2.5 text-sm text-slate-300">
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838]" />
+                <span>Panjappur (New Bus Terminal Belt)</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838]" />
+                <span>K.K. Nagar Extension / Manikandam</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838]" />
+                <span>Samayapuram / NH-45 Highway</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838]" />
+                <span>Navalpattu (ELCOT IT Park Road)</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838]" />
+                <span>Thiruverumbur / BHEL Corridor</span>
+              </li>
+            </ul>
+          </div>
+
           {/* Direct Advisor Contact */}
-          <div className="lg:col-span-4">
-            <h4 className="f-mono mb-5 text-[11px] uppercase tracking-[0.2em] text-[var(--gold-bright)]">
+          <div className="lg:col-span-3">
+            <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-[#D9A838] mb-5">
               Direct Advisory
             </h4>
-            <div className="space-y-3.5 text-[14px]">
+            <div className="space-y-3.5 text-sm">
               <div>
-                <span className="f-mono block text-[10px] uppercase tracking-[0.18em] text-[#8a978e]">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400 block">
                   Senior Property Advisor
                 </span>
-                <span className="f-display text-2xl text-white">PRATHAP</span>
+                <span className="text-lg font-bold text-white">PRATHAP</span>
               </div>
+
               <a
                 href="tel:9629048171"
-                className="f-mono flex items-center gap-2.5 text-white transition-colors hover:text-[var(--gold-bright)]"
+                className="flex items-center gap-2.5 text-white hover:text-[#D9A838] transition-colors font-mono font-semibold"
               >
-                <Phone className="h-4 w-4 text-[var(--gold-bright)]" />
+                <Phone className="h-4 w-4 text-[#D9A838]" />
                 <span>+91 96290 48171</span>
               </a>
-              <div className="flex items-center gap-2.5 text-[#b9c3bb]">
-                <Mail className="h-4 w-4 text-[var(--gold-bright)]" />
-                <span>advisor@mkmproperties.com</span>
+
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 text-emerald-400 hover:text-emerald-300 transition-colors"
+              >
+                <MessageSquare className="h-4 w-4 text-emerald-400" />
+                <span>Instant WhatsApp Chat</span>
+              </a>
+
+              <div className="flex items-center gap-2.5 text-slate-300">
+                <Mail className="h-4 w-4 text-[#D9A838] shrink-0" />
+                <span className="text-xs">advisor@mkmproperties.com</span>
               </div>
-              <div className="flex items-start gap-2.5 text-[#b9c3bb]">
-                <MapPin className="mt-1 h-4 w-4 shrink-0 text-[var(--gold-bright)]" />
-                <span>No. 14, Royal Tower, Cantonment / K.K. Nagar Road, Trichy - 620001, Tamil Nadu</span>
-              </div>
-              <div className="pt-2">
-                <Link href="/" className="btn btn-gold btn-sm">
-                  <span>Book Free Site Visit Cab</span>
-                  <ArrowUpRight className="h-4 w-4" />
-                </Link>
+
+              <div className="flex items-start gap-2.5 text-slate-300">
+                <MapPin className="h-4 w-4 text-[#D9A838] shrink-0 mt-0.5" />
+                <span className="text-xs leading-relaxed">
+                  No. 14, Royal Tower, Cantonment / K.K. Nagar Road, Trichy – 620001
+                </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="f-mono mt-14 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-6 text-[11px] uppercase tracking-[0.12em] text-[#6f7d74] sm:flex-row sm:items-center">
-          <p>© 2026 MKM Properties · Tiruchirappalli</p>
+        {/* Legal Disclaimer */}
+        <div className="mt-14 pt-8 border-t border-slate-800 text-xs text-slate-400 leading-relaxed">
+          <p>
+            <strong>Regulatory &amp; Legal Notice:</strong> MKM Properties provides property guidance and direct developer coordination in Tiruchirappalli. DTCP (Directorate of Town and Country Planning) and RERA (Real Estate Regulatory Authority) approval status, along with bank loan financing eligibility, are strictly verified and disclosed on a project-by-project basis. Customers pay zero brokerage.
+          </p>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400">
+          <p>© 2026 MKM Properties. All rights reserved. Tiruchirappalli, Tamil Nadu.</p>
           <div className="flex items-center gap-6">
-            <Link href="/privacy" className="transition-colors hover:text-white">Privacy Policy</Link>
-            <Link href="/admin/login" className="transition-colors hover:text-white">Admin Access</Link>
+            <Link href="/privacy" className="hover:text-white transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/admin/login" className="hover:text-white transition-colors">
+              Advisor Portal
+            </Link>
           </div>
         </div>
       </div>

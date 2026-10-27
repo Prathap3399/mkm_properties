@@ -1,10 +1,22 @@
 import type { Metadata, Viewport } from 'next';
-import { Outfit, Fraunces, IBM_Plex_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, Inter, Outfit, Fraunces, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import StickyMobileBar from '@/components/layout/StickyMobileBar';
 import MetaPixel from '@/components/analytics/MetaPixel';
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-jakarta'
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter'
+});
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -98,7 +110,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${outfit.variable} ${fraunces.variable} ${plexMono.variable}`}>
+    <html lang="en" className={`${jakarta.variable} ${inter.variable} ${outfit.variable} ${fraunces.variable} ${plexMono.variable}`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

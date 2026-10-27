@@ -14,7 +14,11 @@ import {
   AlertCircle,
   Loader2,
   Building2,
-  Car
+  Car,
+  MessageSquare,
+  ShieldCheck,
+  TrendingUp,
+  Tag
 } from 'lucide-react';
 import { EnquirySchema, type EnquiryFormData } from '@/lib/validation/enquiry';
 
@@ -24,8 +28,8 @@ interface SiteVisitFormProps {
 }
 
 const TRICHY_LOCATIONS = [
-  'K.K. Nagar Extension / Manikandam',
   'Panjappur (New Integrated Bus Terminal)',
+  'K.K. Nagar Extension / Manikandam',
   'Samayapuram / NH-45 Corridor',
   'Navalpattu (ELCOT IT Park Road)',
   'Thiruverumbur / BHEL / NIT Belt',
@@ -33,15 +37,11 @@ const TRICHY_LOCATIONS = [
   'Other / Open to Suggestions'
 ];
 
-const PROJECT_CHOICES = [
-  'Select a Project / Not Sure Yet',
-  'Sterling Avenue (K.K. Nagar Extension)',
-  'Ritz Landmark Avenue (Panjappur)',
-  'Rainbow City (Samayapuram)',
-  'Elegant Avenue (Navalpattu)',
-  'Glorious Town (Thiruverumbur)',
-  'Samayapuram Highway Property',
-  'Other / Not Sure'
+const BUDGET_OPTIONS = [
+  'Under ₹15 Lakhs',
+  '₹15 Lakhs – ₹30 Lakhs',
+  '₹30 Lakhs – ₹50 Lakhs',
+  'Above ₹50 Lakhs'
 ];
 
 const TIME_SLOTS = [
@@ -71,12 +71,12 @@ export default function SiteVisitForm({ defaultLocation = '' }: SiteVisitFormPro
       phone: '',
       whatsapp: '',
       email: '',
-      preferredLocation: defaultLocation || 'K.K. Nagar Extension / Manikandam',
+      preferredLocation: defaultLocation || 'Panjappur (New Integrated Bus Terminal)',
       purpose: 'Build a House',
-      projectId: 'Select a Project / Not Sure Yet',
+      projectId: '',
       preferredVisitDate: '',
       preferredTime: 'Morning (09:00 AM – 12:00 PM)',
-      budget: '',
+      budget: '₹15 Lakhs – ₹30 Lakhs',
       hearAboutUs: '',
       additionalRequirements: '',
       message: '',
@@ -112,10 +112,12 @@ export default function SiteVisitForm({ defaultLocation = '' }: SiteVisitFormPro
         setSubmitSuccess(true);
         reset();
       } else {
-        setServerError(result.error || 'Failed to submit site visit request. Please call PRATHAP at 9629048171 directly.');
+        setServerError(
+          result.error || 'Failed to submit site visit request. Please call PRATHAP directly at +91 96290 48171.'
+        );
       }
     } catch (err: any) {
-      setServerError('Network connection error. Please call PRATHAP at 96290 48171 directly.');
+      setServerError('Network connection error. Please call PRATHAP at +91 96290 48171 directly.');
     } finally {
       setIsSubmitting(false);
     }
@@ -123,31 +125,33 @@ export default function SiteVisitForm({ defaultLocation = '' }: SiteVisitFormPro
 
   if (submitSuccess) {
     return (
-      <div className="rounded-2xl border-2 border-[var(--forest)] bg-[var(--card)] p-8 sm:p-10 shadow-lg text-center animate-fadeIn">
-        <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-emerald-100 text-emerald-800">
-          <CheckCircle2 className="h-9 w-9 text-[var(--forest)]" />
+      <div className="rounded-2xl border border-emerald-200 bg-white p-8 sm:p-10 shadow-lg text-center animate-fadeIn">
+        <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-emerald-50 text-emerald-700 ring-8 ring-emerald-50/50">
+          <CheckCircle2 className="h-9 w-9" />
         </div>
 
-        <h3 className="f-display mt-5 text-2xl font-bold text-[var(--ink)]">
-          Site Visit Request Received
+        <h3 className="text-2xl font-bold tracking-tight text-slate-900 mt-5">
+          Site Visit Request Confirmed
         </h3>
 
-        <div className="mt-4 rounded-xl bg-[var(--paper)] p-5 text-left border border-[var(--line)]">
-          <p className="text-base font-semibold text-[var(--forest)]">
-            "Thank you for your enquiry. Our team will contact you shortly to confirm your site visit."
+        <div className="mt-4 rounded-xl bg-slate-50 p-6 text-left border border-slate-200 space-y-3">
+          <p className="text-base font-semibold text-[#0B271F]">
+            "Thank you for your enquiry. Our property advisor PRATHAP will contact you shortly to confirm your site visit arrangements."
           </p>
-          <p className="mt-2 text-sm text-[var(--ink-soft)] leading-relaxed">
-            PRATHAP will connect with you directly to understand your property requirements, discuss suitable location options, and coordinate a convenient time for your site inspection.
+          <p className="text-sm text-slate-600 leading-relaxed">
+            We will coordinate your private cab pickup in Trichy, verify your preferred layout choices, and walk the boundary stones together with your family. Zero fees, zero brokerage.
           </p>
         </div>
 
-        <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3.5">
           <a
-            href="tel:9629048171"
-            className="btn btn-primary w-full sm:w-auto"
+            href="https://wa.me/919629048171?text=Hello%20PRATHAP,%20I%20just%20submitted%20a%20site%20visit%20request%20on%20the%20website%20and%20would%20like%20to%20confirm."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-wa w-full sm:w-auto"
           >
-            <Phone className="h-4 w-4 text-[var(--gold-bright)]" />
-            <span>Call PRATHAP Directly (96290 48171)</span>
+            <MessageSquare className="h-4 w-4" />
+            <span>Confirm on WhatsApp (Instant)</span>
           </a>
           <button
             type="button"
@@ -162,19 +166,22 @@ export default function SiteVisitForm({ defaultLocation = '' }: SiteVisitFormPro
   }
 
   return (
-    <div className="rounded-2xl border border-[var(--line-strong)] bg-[var(--card)] p-6 sm:p-9 shadow-md relative">
-      {/* 5. Form Heading & Description per prompt */}
-      <div className="mb-6 border-b border-[var(--line)] pb-5">
-        <h3 className="f-display text-2xl font-bold text-[var(--ink)] sm:text-3xl">
-          Book Your Free Site Visit
+    <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-9 shadow-md relative">
+      {/* Heading & Supporting text per prompt Section 11 */}
+      <div className="mb-6 border-b border-slate-100 pb-5">
+        <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-[#C2922E] block mb-1">
+          Complimentary Guided Inspection
+        </span>
+        <h3 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          Plan Your Site Visit
         </h3>
-        <p className="mt-2 text-sm text-[var(--ink-soft)] leading-relaxed">
-          Share your details and requirements. We’ll contact you to understand your needs and arrange a suitable site visit.
+        <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+          Tell us what you're looking for. Our property advisor will help you identify suitable options and arrange a convenient site visit.
         </p>
       </div>
 
       {serverError && (
-        <div className="mb-6 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+        <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
           <AlertCircle className="h-5 w-5 shrink-0 text-red-600 mt-0.5" />
           <div>{serverError}</div>
         </div>
@@ -184,89 +191,106 @@ export default function SiteVisitForm({ defaultLocation = '' }: SiteVisitFormPro
         {/* Anti-bot honeypot */}
         <input type="text" {...register('botField')} className="hidden" tabIndex={-1} autoComplete="off" />
 
-        {/* 1. Name */}
-        <div>
-          <label className="block text-xs font-mono uppercase tracking-wider text-[var(--ink)] mb-1.5 font-bold">
-            Name <span className="text-red-600">*</span>
-          </label>
-          <div className="relative">
-            <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--ink-soft)]">
-              <User className="h-4 w-4" />
-            </span>
-            <input
-              type="text"
-              placeholder="Your full name"
-              {...register('name')}
-              className={`w-full pl-10 pr-4 py-2.5 rounded-lg border bg-white text-sm text-[var(--ink)] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--forest)] ${
-                errors.name ? 'border-red-500' : 'border-[var(--line-strong)]'
-              }`}
-            />
-          </div>
-          {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name.message}</p>}
-        </div>
-
-        {/* 2. Mobile Number */}
-        <div>
-          <label className="block text-xs font-mono uppercase tracking-wider text-[var(--ink)] mb-1.5 font-bold">
-            Mobile Number <span className="text-red-600">*</span>
-          </label>
-          <div className="relative">
-            <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--ink-soft)]">
-              <Phone className="h-4 w-4" />
-            </span>
-            <input
-              type="tel"
-              placeholder="10-digit mobile number (e.g. 9629048171)"
-              {...register('phone')}
-              className={`w-full pl-10 pr-4 py-2.5 rounded-lg border bg-white text-sm text-[var(--ink)] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--forest)] ${
-                errors.phone ? 'border-red-500' : 'border-[var(--line-strong)]'
-              }`}
-            />
-          </div>
-          {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone.message}</p>}
-        </div>
-
-        {/* 3. What are you looking for? (Build a House / Investment / Both) */}
-        <div>
-          <label className="block text-xs font-mono uppercase tracking-wider text-[var(--ink)] mb-2 font-bold">
-            What are you looking for? <span className="text-red-600">*</span>
-          </label>
-          <div className="grid grid-cols-3 gap-2">
-            {[
-              { id: 'Build a House', label: 'Build a House' },
-              { id: 'Investment', label: 'Investment' },
-              { id: 'Both', label: 'Both' }
-            ].map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setValue('purpose', item.id as any)}
-                className={`py-2 px-3 rounded-lg text-xs font-semibold border text-center transition-all cursor-pointer ${
-                  selectedPurpose === item.id || (selectedPurpose === 'Building a House' && item.id === 'Build a House')
-                    ? 'bg-[var(--forest)] text-[#fef9c3] border-[var(--forest)] shadow-xs'
-                    : 'bg-white text-[var(--ink)] border-[var(--line-strong)] hover:bg-[var(--paper)]'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 4. Preferred Location & Preferred Project */}
+        {/* 1. Name & Mobile Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-mono uppercase tracking-wider text-[var(--ink)] mb-1.5 font-bold">
+            <label className="label">
+              Full Name <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <User className="h-4 w-4" />
+              </span>
+              <input
+                type="text"
+                placeholder="e.g. S. Prathap"
+                {...register('name')}
+                className={`field !pl-10 ${errors.name ? 'field-error' : ''}`}
+              />
+            </div>
+            {errors.name && (
+              <p className="mt-1 text-xs text-red-600 font-medium">{errors.name.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="label">
+              Mobile Number <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <Phone className="h-4 w-4" />
+              </span>
+              <input
+                type="tel"
+                placeholder="10-digit mobile number"
+                {...register('phone')}
+                className={`field !pl-10 ${errors.phone ? 'field-error' : ''}`}
+              />
+            </div>
+            {errors.phone && (
+              <p className="mt-1 text-xs text-red-600 font-medium">{errors.phone.message}</p>
+            )}
+          </div>
+        </div>
+
+        {/* 2. WhatsApp Number & Purpose */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="label">
+              WhatsApp Number <span className="text-slate-400 font-normal text-xs">(Optional)</span>
+            </label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <MessageSquare className="h-4 w-4" />
+              </span>
+              <input
+                type="tel"
+                placeholder="Same as mobile or different"
+                {...register('whatsapp')}
+                className="field !pl-10"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="label">
+              Purpose <span className="text-red-500">*</span>
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { value: 'Build a House', label: 'Build Home' },
+                { value: 'Investment', label: 'Investment' },
+                { value: 'Both', label: 'Both' }
+              ].map((item) => (
+                <button
+                  key={item.value}
+                  type="button"
+                  onClick={() => setValue('purpose', item.value as any)}
+                  className={`py-2.5 px-2 text-xs font-semibold rounded-xl border text-center transition-all cursor-pointer ${
+                    selectedPurpose === item.value
+                      ? 'bg-[#0B271F] border-[#0B271F] text-white shadow-xs'
+                      : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Preferred Location & Budget Range */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="label">
               Preferred Location
             </label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--ink-soft)]">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                 <MapPin className="h-4 w-4" />
               </span>
-              <select
-                {...register('preferredLocation')}
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[var(--line-strong)] bg-white text-sm text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]"
-              >
+              <select {...register('preferredLocation')} className="field !pl-10 appearance-none bg-white cursor-pointer">
                 {TRICHY_LOCATIONS.map((loc) => (
                   <option key={loc} value={loc}>
                     {loc}
@@ -277,20 +301,17 @@ export default function SiteVisitForm({ defaultLocation = '' }: SiteVisitFormPro
           </div>
 
           <div>
-            <label className="block text-xs font-mono uppercase tracking-wider text-[var(--ink)] mb-1.5 font-bold">
-              Preferred Project
+            <label className="label">
+              Budget Range
             </label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--ink-soft)]">
-                <Building2 className="h-4 w-4" />
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <Tag className="h-4 w-4" />
               </span>
-              <select
-                {...register('projectId')}
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[var(--line-strong)] bg-white text-sm text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]"
-              >
-                {PROJECT_CHOICES.map((p) => (
-                  <option key={p} value={p}>
-                    {p}
+              <select {...register('budget')} className="field !pl-10 appearance-none bg-white cursor-pointer">
+                {BUDGET_OPTIONS.map((b) => (
+                  <option key={b} value={b}>
+                    {b}
                   </option>
                 ))}
               </select>
@@ -298,40 +319,37 @@ export default function SiteVisitForm({ defaultLocation = '' }: SiteVisitFormPro
           </div>
         </div>
 
-        {/* 5. Preferred Site Visit Date & Preferred Time */}
+        {/* 4. Preferred Visit Date & Time */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-mono uppercase tracking-wider text-[var(--ink)] mb-1.5 font-bold">
-              Preferred Site Visit Date
+            <label className="label">
+              Preferred Visit Date
             </label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--ink-soft)]">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                 <Calendar className="h-4 w-4" />
               </span>
               <input
                 type="date"
                 min={minDateStr}
                 {...register('preferredVisitDate')}
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[var(--line-strong)] bg-white text-sm text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]"
+                className="field !pl-10 bg-white cursor-pointer"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-mono uppercase tracking-wider text-[var(--ink)] mb-1.5 font-bold">
+            <label className="label">
               Preferred Time
             </label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--ink-soft)]">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                 <Clock className="h-4 w-4" />
               </span>
-              <select
-                {...register('preferredTime')}
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[var(--line-strong)] bg-white text-sm text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]"
-              >
-                {TIME_SLOTS.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
+              <select {...register('preferredTime')} className="field !pl-10 appearance-none bg-white cursor-pointer">
+                {TIME_SLOTS.map((slot) => (
+                  <option key={slot} value={slot}>
+                    {slot}
                   </option>
                 ))}
               </select>
@@ -339,58 +357,71 @@ export default function SiteVisitForm({ defaultLocation = '' }: SiteVisitFormPro
           </div>
         </div>
 
-        {/* 6. Your Requirement / Message */}
+        {/* 5. Message / Specific Requirements */}
         <div>
-          <label className="block text-xs font-mono uppercase tracking-wider text-[var(--ink)] mb-1.5 font-bold">
-            Your Requirement / Message <span className="text-[var(--ink-soft)] font-normal text-[11px]">(Optional)</span>
+          <label className="label">
+            Specific Requirements / Questions <span className="text-slate-400 font-normal text-xs">(Optional)</span>
           </label>
           <textarea
             rows={2}
-            placeholder="Tell us what you're looking for (e.g. plot size, budget, road preference, or questions)..."
+            placeholder="Tell us what you're looking for (e.g. plot size, facing direction, immediate construction timeline...)"
             {...register('message')}
-            className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--line-strong)] bg-white text-sm text-[var(--ink)] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--forest)]"
+            className="field resize-none"
           />
         </div>
 
-        {/* 7. Consent per prompt */}
-        <div className="flex items-start gap-2.5 pt-1">
-          <input
-            type="checkbox"
-            id="siteVisitConsent"
-            {...register('consent')}
-            className="mt-1 h-4 w-4 rounded border-gray-300 text-[var(--forest)] focus:ring-[var(--forest)] cursor-pointer"
-          />
-          <label htmlFor="siteVisitConsent" className="text-xs text-[var(--ink-soft)] leading-snug cursor-pointer font-medium">
-            I agree to be contacted regarding my property enquiry and site visit.
+        {/* 6. Consent */}
+        <div>
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              {...register('consent')}
+              className="mt-1 h-4 w-4 rounded border-slate-300 text-[#0B271F] focus:ring-[#0B271F] cursor-pointer"
+            />
+            <span className="text-xs text-slate-600 leading-relaxed">
+              I agree to be contacted by MKM Properties regarding my property inquiry and site visit coordination. We respect your privacy — no promotional spam.
+            </span>
           </label>
-        </div>
-        {errors.consent && <p className="text-xs text-red-600">{errors.consent.message}</p>}
-
-        {/* 8. Button: BOOK MY SITE VISIT */}
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="btn btn-primary w-full py-3.5 text-base font-bold shadow-md cursor-pointer disabled:opacity-70"
-        >
-          {isSubmitting ? (
-            <span className="inline-flex items-center gap-2">
-              <Loader2 className="h-5 w-5 animate-spin" />
-              <span>Submitting Your Request...</span>
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-2">
-              <Car className="h-5 w-5 text-[var(--gold-bright)]" />
-              <span>BOOK MY SITE VISIT</span>
-            </span>
+          {errors.consent && (
+            <p className="mt-1 text-xs text-red-600 font-medium">{errors.consent.message}</p>
           )}
-        </button>
+        </div>
 
-        {/* Direct advisory note */}
-        <div className="pt-2 text-center text-xs text-[var(--ink-soft)]">
-          <span>Prefer direct consultation? Call </span>
-          <a href="tel:9629048171" className="font-bold text-[var(--forest)] hover:underline">
-            PRATHAP at 96290 48171
-          </a>
+        {/* 7. Submit Button per prompt Section 11 */}
+        <div className="pt-2">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="btn btn-primary w-full py-3.5 text-base font-bold shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span>Submitting Your Request...</span>
+              </>
+            ) : (
+              <>
+                <Car className="h-5 w-5 text-[#D9A838]" />
+                <span>Request Site Visit</span>
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Value Reassurance */}
+        <div className="pt-2 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11px] text-slate-500 font-medium">
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+            Free Private Cab Pickup
+          </span>
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+            Zero Brokerage / Direct Rates
+          </span>
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+            Verified Approvals
+          </span>
         </div>
       </form>
     </div>
