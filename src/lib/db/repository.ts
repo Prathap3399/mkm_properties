@@ -437,7 +437,7 @@ export async function ensureSeeded() {
           phone: '9629048171',
           whatsapp: '9629048171',
           email: 'advisor@mkmproperties.com',
-          address: 'No. 14, Royal Tower, Cantonment / K.K. Nagar Road, Tiruchirappalli - 620001, Tamil Nadu',
+          address: 'Cantonment, Trichy',
           googleMapsUrl: 'https://maps.google.com/?q=Tiruchirappalli,Tamil+Nadu',
           businessHours: 'Monday – Sunday: 8:00 AM – 8:00 PM'
         })

@@ -166,7 +166,7 @@ export default function ContactPage() {
                         Office Location
                       </span>
                       <p className="text-xs text-slate-600 leading-relaxed mt-0.5">
-                        No. 14, Royal Tower, Cantonment / K.K. Nagar Road, Tiruchirappalli – 620001, Tamil Nadu, India
+                        Cantonment, Trichy
                       </p>
                     </div>
                   </div>

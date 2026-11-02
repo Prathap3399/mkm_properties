@@ -168,7 +168,7 @@ export default function Footer() {
               <div className="flex items-start gap-2.5 text-slate-300">
                 <MapPin className="h-4 w-4 text-[#D9A838] shrink-0 mt-0.5" />
                 <span className="text-xs leading-relaxed">
-                  No. 14, Royal Tower, Cantonment / K.K. Nagar Road, Trichy – 620001
+                  Cantonment, Trichy
                 </span>
               </div>
             </div>

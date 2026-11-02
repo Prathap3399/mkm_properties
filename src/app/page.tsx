@@ -656,7 +656,7 @@ export default function HomePage() {
                   Tiruchirappalli
                 </h3>
                 <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-                  No. 14, Royal Tower, Cantonment / K.K. Nagar Road, Trichy – 620001, Tamil Nadu
+                  Cantonment, Trichy
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-slate-100">

@@ -59,7 +59,7 @@ export default function ContentManagerClient({ initialContents }: Props) {
   const [contactPhone, setContactPhone] = useState('9629048171');
   const [contactWhatsApp, setContactWhatsApp] = useState('9629048171');
   const [contactAddress, setContactAddress] = useState(
-    'No. 14, Royal Tower, Cantonment / K.K. Nagar Road, Tiruchirappalli - 620001, Tamil Nadu'
+    'Cantonment, Trichy'
   );
   const [businessHours, setBusinessHours] = useState('Monday – Sunday: 8:00 AM – 8:00 PM');
 
