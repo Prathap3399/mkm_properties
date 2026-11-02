@@ -28,12 +28,12 @@ interface SiteVisitFormProps {
 }
 
 const TRICHY_LOCATIONS = [
-  'Panjappur (New Integrated Bus Terminal)',
-  'K.K. Nagar Extension / Manikandam',
-  'Samayapuram / NH-45 Corridor',
-  'Navalpattu (ELCOT IT Park Road)',
-  'Thiruverumbur / BHEL / NIT Belt',
-  'Vayalur Road / Somarasampettai',
+  'Near SIT College, Ariyamangalam',
+  'Near MIET College, Trichy',
+  'Trichy–Madurai National Highway (near Panjappur)',
+  'National Research Centre for Banana (Othakkadai)',
+  '18,000 sq. ft. commercial property near Samayapuram',
+  'Near Thiran Nagar, Trichy–Dindigul National Highway',
   'Other / Open to Suggestions'
 ];
 
@@ -71,7 +71,7 @@ export default function SiteVisitForm({ defaultLocation = '' }: SiteVisitFormPro
       phone: '',
       whatsapp: '',
       email: '',
-      preferredLocation: defaultLocation || 'Panjappur (New Integrated Bus Terminal)',
+      preferredLocation: defaultLocation || 'Near SIT College, Ariyamangalam',
       purpose: 'Build a House',
       projectId: '',
       preferredVisitDate: '',

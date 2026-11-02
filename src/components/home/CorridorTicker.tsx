@@ -1,11 +1,12 @@
 import React from 'react';
 
 const corridors = [
-  'Panjappur · New Bus Terminal',
-  'K.K. Nagar Extension',
-  'Samayapuram NH-45',
-  'Navalpattu IT Park Road',
-  'Thiruverumbur & BHEL'
+  'Near SIT College · Ariyamangalam',
+  'Near MIET College · Trichy',
+  'Trichy–Madurai NH · Near Panjappur',
+  'Banana Research Centre · Othakkadai',
+  '18,000 Sq.Ft Commercial · Samayapuram',
+  'Near Thiran Nagar · Trichy–Dindigul NH'
 ];
 
 export default function CorridorTicker() {

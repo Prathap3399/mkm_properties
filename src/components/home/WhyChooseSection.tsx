@@ -27,39 +27,46 @@ const promises = [
 
 const verifiedCorridors = [
   {
-    name: 'Panjappur',
-    highlight: 'New Integrated Bus Terminal Axis',
-    description: 'High-growth investment zone close to the mega Integrated Bus Terminal, Olympic sports academy, and wholesale market.',
-    projectLink: '/projects/ritz-landmark-avenue',
-    projectName: 'Ritz Landmark Avenue'
+    name: 'Near SIT College, Ariyamangalam',
+    highlight: 'Tanjore Main Road Corridor',
+    description: 'Centrally positioned near Seshasayee Institute of Technology (SIT), Ariyamangalam with immediate city connectivity and rapid appreciation.',
+    projectLink: '/#site-visit',
+    projectName: 'Ariyamangalam Prime Plots'
   },
   {
-    name: 'K.K. Nagar Extension',
-    highlight: 'Manikandam Residential Belt',
-    description: 'Serene, family-friendly neighbourhood with sweet potable groundwater, wide 40ft blacktop roads, and quick access to Central Bus Stand.',
-    projectLink: '/projects/sterling-avenue',
-    projectName: 'Sterling Avenue'
+    name: 'Near MIET College, Trichy',
+    highlight: 'Trichy–Pudukkottai Highway Axis',
+    description: 'Prominent educational and residential axis near MIET Institutions with wide road connectivity, sweet groundwater, and serene surroundings.',
+    projectLink: '/#site-visit',
+    projectName: 'MIET Corridor Enclave'
   },
   {
-    name: 'Samayapuram NH-45',
-    highlight: 'Chennai-Trichy National Highway',
-    description: 'Prime highway frontage with heavy visibility, excellent connectivity, and proximity to major educational institutions and shrines.',
-    projectLink: '/projects/rainbow-city',
-    projectName: 'Rainbow City & Highway Property'
+    name: 'Trichy–Madurai National Highway',
+    highlight: 'Near Panjappur Integrated Bus Terminal',
+    description: 'High-momentum investment zone situated along the Madurai NH, moments from the mega Panjappur Bus Terminal and Olympic Sports City.',
+    projectLink: '/#site-visit',
+    projectName: 'Panjappur Highway Plots'
   },
   {
-    name: 'Navalpattu IT Corridor',
-    highlight: 'ELCOT IT Park Road',
-    description: 'Burgeoning tech hub near IT companies and Anna University, offering high residential rental yields and fast capital appreciation.',
-    projectLink: '/projects/elegant-avenue',
-    projectName: 'Elegant Avenue'
+    name: 'NRC for Banana (Othakkadai)',
+    highlight: 'Podhavur / Othakkadai Belt',
+    description: 'Lush agricultural and residential green zone adjacent to National Research Centre for Banana, offering fresh air, copious water, and peaceful living.',
+    projectLink: '/#site-visit',
+    projectName: 'Othakkadai Green Acres'
   },
   {
-    name: 'Thiruverumbur & BHEL',
-    highlight: 'Industrial & Academic Hub',
-    description: 'Established residential belt adjacent to NIT Trichy, BHEL township, and Thiruverumbur railway transit.',
-    projectLink: '/projects/glorious-town',
-    projectName: 'Glorious Town'
+    name: 'Commercial Land near Samayapuram',
+    highlight: '18,000 sq. ft. Highway Commercial Property',
+    description: 'High-visibility 18,000 sq.ft commercial asset right off NH-45 Highway near Samayapuram, ideal for institutions, warehouses, commercial complexes, or investments.',
+    projectLink: '/#site-visit',
+    projectName: '18,000 Sq.Ft Commercial Property'
+  },
+  {
+    name: 'Near Thiran Nagar',
+    highlight: 'Trichy–Dindigul National Highway',
+    description: 'Prime fast-growing residential corridor along the Trichy–Dindigul 4-lane highway with seamless transit to central Trichy and upcoming infra.',
+    projectLink: '/#site-visit',
+    projectName: 'Thiran Nagar Highway Plots'
   }
 ];
 

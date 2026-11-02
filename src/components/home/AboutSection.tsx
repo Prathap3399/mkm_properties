@@ -28,7 +28,7 @@ export default function AboutSection() {
             </p>
 
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-[var(--ink-soft)] sm:text-lg">
-              Led personally by <strong className="font-semibold text-[var(--ink)]">PRATHAP</strong>, we assist families who want to construct their dream home and smart investors seeking high-potential land along Trichy’s fastest-growing corridors — including Panjappur, K.K. Nagar Extension, Samayapuram, Navalpattu IT Park, and Thiruverumbur.
+              Led personally by <strong className="font-semibold text-[var(--ink)]">PRATHAP</strong>, we assist families who want to construct their dream home and smart investors seeking high-potential plots across Trichy’s key growth belts — including Ariyamangalam (SIT College), MIET College road, Trichy–Madurai NH (Panjappur), Othakkadai (Banana Research Centre), Samayapuram commercial corridor, and Thiran Nagar (Trichy–Dindigul NH).
             </p>
 
             <ul className="mt-9 grid grid-cols-1 gap-x-8 gap-y-3.5 border-t border-[var(--line-strong)] pt-8 sm:grid-cols-2">
@@ -79,8 +79,8 @@ export default function AboutSection() {
                 <div className="flex items-start gap-4 py-4">
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[var(--gold)]" />
                   <div>
-                    <dt className="f-mono text-[10px] uppercase tracking-[0.18em] text-[var(--ink-soft)]">Service corridors</dt>
-                    <dd className="mt-1 text-[15px] font-medium">Panjappur, K.K. Nagar, Samayapuram, Navalpattu</dd>
+                    <dt className="f-mono text-[10px] uppercase tracking-[0.18em] text-[var(--ink-soft)]">Prime Locations</dt>
+                    <dd className="mt-1 text-[14px] font-medium leading-relaxed">Ariyamangalam (SIT), MIET College, Panjappur NH, Othakkadai, Samayapuram, Thiran Nagar</dd>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 py-4">

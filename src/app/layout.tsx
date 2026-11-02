@@ -18,15 +18,18 @@ export const metadata: Metadata = {
     template: '%s | MKM Properties – Trichy'
   },
   description:
-    'Find verified residential plots, DTCP-approved layouts, and authentic land guidance in Trichy, Tamil Nadu. Direct consultation with PRATHAP (+91 96290 48171). Panjappur, K.K. Nagar, Samayapuram, Navalpattu.',
+    'Verified residential & commercial plots in Trichy: Near SIT College Ariyamangalam, MIET College, Trichy–Madurai NH (Panjappur), NRC for Banana Othakkadai, 18,000 sq.ft Samayapuram commercial property, and Thiran Nagar Dindigul NH. Consult PRATHAP (+91 96290 48171).',
   keywords: [
     'Trichy real estate',
     'plots in trichy',
     'residential plots trichy',
+    'SIT college ariyamangalam plots',
+    'MIET college trichy plots',
+    'trichy madurai national highway plots',
     'panjappur new bus stand plots',
-    'samayapuram plots',
-    'kk nagar trichy land',
-    'navalpattu IT park plots',
+    'banana research centre othakkadai plots',
+    'samayapuram commercial property',
+    'thiran nagar dindigul highway plots',
     'DTCP approved plots trichy',
     'MKM Properties Trichy',
     'திருச்சி வீட்டு மனை'

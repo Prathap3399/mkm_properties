@@ -271,12 +271,12 @@ export default function EnquiryForm({
               ))}
               {projectOptions.length === 0 && (
                 <>
-                  <option value="Sterling Avenue">Sterling Avenue (K.K. Nagar Ext)</option>
-                  <option value="Ritz Landmark Avenue">Ritz Landmark Avenue (Panjappur)</option>
-                  <option value="Rainbow City">Rainbow City (Samayapuram)</option>
-                  <option value="Elegant Avenue">Elegant Avenue (Navalpattu IT Park)</option>
-                  <option value="Glorious Town">Glorious Town (Thiruverumbur)</option>
-                  <option value="Samayapuram Highway Property">Samayapuram Highway Property</option>
+                  <option value="Near SIT College, Ariyamangalam">Near SIT College, Ariyamangalam</option>
+                  <option value="Near MIET College, Trichy">Near MIET College, Trichy</option>
+                  <option value="Trichy–Madurai NH (near Panjappur)">Trichy–Madurai National Highway (near Panjappur)</option>
+                  <option value="NRC for Banana (Othakkadai)">National Research Centre for Banana (Othakkadai)</option>
+                  <option value="18,000 sq.ft Commercial near Samayapuram">18,000 sq. ft. commercial property near Samayapuram</option>
+                  <option value="Near Thiran Nagar, Trichy–Dindigul NH">Near Thiran Nagar, Trichy–Dindigul National Highway</option>
                 </>
               )}
             </select>
@@ -359,7 +359,7 @@ export default function EnquiryForm({
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Panjappur, K.K. Nagar, Samayapuram"
+                  placeholder="e.g. Ariyamangalam, MIET, Panjappur, Samayapuram"
                   className="field"
                   {...register('preferredLocation')}
                 />

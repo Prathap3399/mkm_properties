@@ -86,31 +86,35 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Prime Corridors */}
+          {/* Available Plot Areas */}
           <div className="lg:col-span-3">
             <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-[#D9A838] mb-5">
-              Trichy Corridors
+              Available Plot Areas
             </h4>
-            <ul className="space-y-2.5 text-sm text-slate-300">
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838]" />
-                <span>Panjappur (New Bus Terminal Belt)</span>
+            <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
+              <li className="flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838] mt-1.5 shrink-0" />
+                <span>Near SIT College, Ariyamangalam</span>
               </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838]" />
-                <span>K.K. Nagar Extension / Manikandam</span>
+              <li className="flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838] mt-1.5 shrink-0" />
+                <span>Near MIET College, Trichy</span>
               </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838]" />
-                <span>Samayapuram / NH-45 Highway</span>
+              <li className="flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838] mt-1.5 shrink-0" />
+                <span>Trichy–Madurai NH (Near Panjappur)</span>
               </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838]" />
-                <span>Navalpattu (ELCOT IT Park Road)</span>
+              <li className="flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838] mt-1.5 shrink-0" />
+                <span>NRC for Banana (Othakkadai)</span>
               </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838]" />
-                <span>Thiruverumbur / BHEL Corridor</span>
+              <li className="flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838] mt-1.5 shrink-0" />
+                <span>18,000 sq.ft Commercial near Samayapuram</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A838] mt-1.5 shrink-0" />
+                <span>Near Thiran Nagar, Trichy–Dindigul NH</span>
               </li>
             </ul>
           </div>
