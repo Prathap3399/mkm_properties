@@ -73,12 +73,22 @@ export default function Header() {
   };
 
   const isAdmin = sessionUser && sessionUser.role === 'admin';
+  const isApprovedUser = sessionUser && sessionUser.status === 'APPROVED' && sessionUser.role === 'user';
 
   const navLinks = isAdmin
     ? [
         { href: '/admin/projects', label: 'Projects View' },
         { href: '/admin/calculator', label: 'Price Calculator' },
+        { href: '/admin/leads', label: 'Customer Leads' },
+        { href: '/documents', label: 'Document Library' },
         { href: '/', label: 'Public Site' }
+      ]
+    : isApprovedUser
+    ? [
+        { href: '/projects', label: 'Projects Portfolio' },
+        { href: '/documents', label: 'Layout Documents' },
+        { href: '/about', label: 'About' },
+        { href: '/contact', label: 'Contact' }
       ]
     : [
         { href: '/#site-visit', label: 'Site Visit' },
@@ -182,14 +192,14 @@ export default function Header() {
                   <MessageSquare className="h-5 w-5" />
                 </a>
 
-                {/* Discreet Admin Login */}
+                {/* Client Portal Sign In */}
                 <Link
-                  href="/admin/login"
-                  className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-                  title="Staff & Advisor Login"
-                  aria-label="Admin Portal Login"
+                  href="/login"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 hover:border-[#0B271F] hover:text-[#0B271F] transition-colors"
+                  title="Client Portal Sign In"
                 >
-                  <Lock className="h-4 w-4" />
+                  <Lock className="h-3.5 w-3.5 text-[#D9A838]" />
+                  <span>Client Portal</span>
                 </Link>
               </>
             )}

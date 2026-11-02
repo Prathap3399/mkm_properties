@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:security": "node scripts/security-audit-suite.js",
+    "admin:create": "node scripts/create-admin.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

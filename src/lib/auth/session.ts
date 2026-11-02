@@ -1,9 +1,9 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-
-const JWT_SECRET_STRING = process.env.ADMIN_JWT_SECRET || 'mkm_properties_super_secure_secret_key_2026_trichy_real_estate';
-const JWT_SECRET = new TextEncoder().encode(JWT_SECRET_STRING);
+import { getDatabase } from '@/lib/db';
+import { logSecurityEvent } from '@/lib/security/audit';
+import { getJwtSecret } from '@/lib/auth/secret';
 
 export const ADMIN_COOKIE_NAME = 'mkm_admin_token';
 export const USER_COOKIE_NAME = 'mkm_user_token';
@@ -25,36 +25,46 @@ export interface UserSessionPayload {
 
 export async function createAdminSessionToken(payload: AdminPayload): Promise<string> {
   return new SignJWT({ ...payload })
-    .setProtectedHeader({ alg: 'HS256' })
+    .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
     .setIssuedAt()
-    .setExpirationTime('7d')
-    .sign(JWT_SECRET);
+    .setExpirationTime('24h') // 24 hour session
+    .sign(getJwtSecret());
 }
 
 export async function verifyAdminSessionToken(token: string): Promise<AdminPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, getJwtSecret(), {
+      algorithms: ['HS256']
+    });
+    if (!payload.id || !payload.email || payload.role !== 'admin') {
+      return null;
+    }
     return {
       id: payload.id as string,
       email: payload.email as string,
       role: payload.role as string
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }
 
 export async function createUserSessionToken(payload: UserSessionPayload): Promise<string> {
   return new SignJWT({ ...payload })
-    .setProtectedHeader({ alg: 'HS256' })
+    .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
     .setIssuedAt()
-    .setExpirationTime('7d')
-    .sign(JWT_SECRET);
+    .setExpirationTime('24h') // 24 hour session
+    .sign(getJwtSecret());
 }
 
 export async function verifyUserSessionToken(token: string): Promise<UserSessionPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, getJwtSecret(), {
+      algorithms: ['HS256']
+    });
+    if (!payload.id || !payload.email) {
+      return null;
+    }
     return {
       id: payload.id as string,
       name: (payload.name as string) || 'Client',
@@ -63,44 +73,123 @@ export async function verifyUserSessionToken(token: string): Promise<UserSession
       role: (payload.role as 'user' | 'admin') || 'user',
       status: (payload.status as 'PENDING' | 'APPROVED' | 'DISABLED' | 'REJECTED') || 'PENDING'
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }
 
+// Authoritative Database-backed admin session retrieval
 export async function getAdminSession(): Promise<AdminPayload | null> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
-  if (!token) return null;
-  return verifyAdminSessionToken(token);
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
+    if (!token) return null;
+
+    const payload = await verifyAdminSessionToken(token);
+    if (!payload) return null;
+
+    // Authoritative verification against database
+    const db = getDatabase();
+    const adminRecord = await db.get<{ id: string; email: string; role: string }>(
+      'SELECT id, email, role FROM AdminUser WHERE id = ?',
+      [payload.id]
+    );
+
+    if (!adminRecord || adminRecord.role !== 'admin') {
+      await logSecurityEvent({
+        eventType: 'ACCESS_DENIED',
+        severity: 'WARN',
+        actorId: payload.id,
+        actorEmail: payload.email,
+        details: { reason: 'Admin account no longer valid in database' },
+        status: 'BLOCKED'
+      });
+      return null;
+    }
+
+    return {
+      id: adminRecord.id,
+      email: adminRecord.email,
+      role: adminRecord.role
+    };
+  } catch (err: any) {
+    console.error('[Session] Admin session verification error:', err.message);
+    return null;
+  }
 }
 
+// Authoritative Database-backed user session retrieval
 export async function getUserSession(): Promise<UserSessionPayload | null> {
-  const cookieStore = await cookies();
-  
-  // 1. Check user token
-  const userToken = cookieStore.get(USER_COOKIE_NAME)?.value;
-  if (userToken) {
-    const userPayload = await verifyUserSessionToken(userToken);
-    if (userPayload) return userPayload;
-  }
+  try {
+    const cookieStore = await cookies();
 
-  // 2. Also allow admin token to act as approved user session
-  const adminToken = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
-  if (adminToken) {
-    const adminPayload = await verifyAdminSessionToken(adminToken);
-    if (adminPayload) {
-      return {
-        id: adminPayload.id,
-        name: 'Administrator',
-        email: adminPayload.email,
-        role: 'admin',
-        status: 'APPROVED'
-      };
+    // 1. Check user token first
+    const userToken = cookieStore.get(USER_COOKIE_NAME)?.value;
+    if (userToken) {
+      const userPayload = await verifyUserSessionToken(userToken);
+      if (userPayload) {
+        // Authoritative verification against active database status!
+        const db = getDatabase();
+        const userRecord = await db.get<{
+          id: string;
+          name: string;
+          email: string;
+          phone: string;
+          role: string;
+          status: string;
+        }>(
+          'SELECT id, name, email, phone, role, status FROM User WHERE id = ?',
+          [userPayload.id]
+        );
+
+        if (!userRecord) {
+          return null;
+        }
+
+        // Enforce active approval: Revoke if status was modified by admin
+        if (userRecord.status !== 'APPROVED' && userRecord.role !== 'admin') {
+          await logSecurityEvent({
+            eventType: 'ACCESS_DENIED',
+            severity: 'WARN',
+            actorId: userRecord.id,
+            actorEmail: userRecord.email,
+            details: { reason: `Session rejected: User account status is ${userRecord.status}` },
+            status: 'BLOCKED'
+          });
+          return null;
+        }
+
+        return {
+          id: userRecord.id,
+          name: userRecord.name,
+          email: userRecord.email,
+          phone: userRecord.phone,
+          role: userRecord.role as 'user' | 'admin',
+          status: userRecord.status as 'PENDING' | 'APPROVED' | 'DISABLED' | 'REJECTED'
+        };
+      }
     }
-  }
 
-  return null;
+    // 2. Allow verified admin token to act as approved session
+    const adminToken = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
+    if (adminToken) {
+      const adminPayload = await getAdminSession();
+      if (adminPayload) {
+        return {
+          id: adminPayload.id,
+          name: 'Administrator',
+          email: adminPayload.email,
+          role: 'admin',
+          status: 'APPROVED'
+        };
+      }
+    }
+
+    return null;
+  } catch (err: any) {
+    console.error('[Session] User session verification error:', err.message);
+    return null;
+  }
 }
 
 export async function requireApprovedUser(redirectPath = '/login?unauthorized=true') {
@@ -125,7 +214,7 @@ export const ADMIN_COOKIE_CONFIG = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax' as const,
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge: 60 * 60 * 24, // 24 hours
     path: '/'
   }
 };
@@ -136,7 +225,7 @@ export const USER_COOKIE_CONFIG = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax' as const,
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge: 60 * 60 * 24, // 24 hours
     path: '/'
   }
 };

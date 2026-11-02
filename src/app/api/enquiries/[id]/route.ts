@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
 import { getAdminSession } from '@/lib/auth/session';
 import { getEnquiryById, updateEnquiryStatus, approveLeadToUser, addFollowUp } from '@/lib/db/repository';
+import { logSecurityEvent } from '@/lib/security/audit';
+import { getClientIp } from '@/lib/security/rateLimit';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getAdminSession();
@@ -19,7 +22,16 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getAdminSession();
+  const ip = getClientIp(req);
+
   if (!session) {
+    await logSecurityEvent({
+      eventType: 'ACCESS_DENIED',
+      severity: 'WARN',
+      ipAddress: ip,
+      details: { endpoint: '/api/enquiries/[id]', method: 'PATCH' },
+      status: 'BLOCKED'
+    });
     return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -30,8 +42,24 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   // 1. Action: Approve Lead & Grant User Access
   if (action === 'approve_user') {
     try {
-      const approvalResult = await approveLeadToUser(id, password || 'MKMClient@2026!');
+      // Generate secure high-entropy initial password if none supplied
+      const initialPass = password && password.length >= 8
+        ? password
+        : `MKM_${crypto.randomBytes(4).toString('hex')}!`;
+
+      const approvalResult = await approveLeadToUser(id, initialPass);
       const updated = await getEnquiryById(id);
+
+      await logSecurityEvent({
+        eventType: 'LEAD_APPROVED',
+        severity: 'INFO',
+        actorId: session.id,
+        actorEmail: session.email,
+        ipAddress: ip,
+        details: { enquiryId: id, createdUserEmail: approvalResult.userEmail },
+        status: 'SUCCESS'
+      });
+
       return NextResponse.json({
         success: true,
         message: 'Lead approved! Client portal account created.',
@@ -42,6 +70,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         }
       });
     } catch (err: any) {
+      console.error('[Approve Lead] Error:', err.message);
       return NextResponse.json({ success: false, error: err.message }, { status: 500 });
     }
   }

@@ -144,42 +144,62 @@ export async function ensureSeeded() {
   const existingCount = await db.get<{ count: number }>('SELECT count(*) as count FROM Project');
   const now = new Date().toISOString();
 
-  // 1. Ensure default admin
+  // 1. Ensure administrator account if configured via environment variables
   const existingAdmin = await db.get<AdminUserRecord>('SELECT * FROM AdminUser LIMIT 1');
   if (!existingAdmin) {
-    const adminPasswordHash = bcrypt.hashSync('MkmTrichy@2026!', 10);
-    await db.run(
-      `INSERT OR IGNORE INTO AdminUser (id, email, passwordHash, role, createdAt) VALUES (?, ?, ?, ?, ?)`,
-      [crypto.randomUUID(), 'admin@mkmproperties.com', adminPasswordHash, 'admin', now]
-    );
+    const adminEmail = (process.env.ADMIN_INITIAL_EMAIL || '').trim().toLowerCase();
+    const adminPass = process.env.ADMIN_INITIAL_PASSWORD;
+    const adminPhone = (process.env.ADMIN_INITIAL_PHONE || '').trim();
 
-    // Also mirror admin in User table for unified authentication
-    await db.run(
-      `INSERT OR IGNORE INTO User (id, name, phone, whatsapp, email, passwordHash, role, status, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [crypto.randomUUID(), 'PRATHAP (Admin)', '9629048171', '9629048171', 'admin@mkmproperties.com', adminPasswordHash, 'admin', 'APPROVED', now, now]
-    );
+    if (adminEmail && adminPass && adminPass.length >= 8) {
+      const adminPasswordHash = bcrypt.hashSync(adminPass, 12);
+      await db.run(
+        `INSERT OR IGNORE INTO AdminUser (id, email, passwordHash, role, createdAt) VALUES (?, ?, ?, ?, ?)`,
+        [crypto.randomUUID(), adminEmail, adminPasswordHash, 'admin', now]
+      );
+
+      // Also mirror admin in User table for unified authentication
+      await db.run(
+        `INSERT OR IGNORE INTO User (id, name, phone, whatsapp, email, passwordHash, role, status, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [crypto.randomUUID(), 'Administrator', adminPhone || null, adminPhone || null, adminEmail, adminPasswordHash, 'admin', 'APPROVED', now, now]
+      );
+      console.info(`[SECURITY INITIALIZATION] Administrator account provisioned from environment for ${adminEmail}`);
+    } else {
+      console.warn('================================================================');
+      console.warn(' [SETUP NOTICE] No administrator account detected.');
+      console.warn(' Create an administrator account using the CLI tool:');
+      console.warn('   npm run admin:create');
+      console.warn(' Or configure ADMIN_INITIAL_EMAIL and ADMIN_INITIAL_PASSWORD in .env');
+      console.warn('================================================================');
+    }
   }
 
-  // 2. Ensure demo approved user for immediate portal access & verification
-  const demoUser = await db.get<UserRecord>("SELECT * FROM User WHERE email = 'demo@mkmproperties.com'");
-  if (!demoUser) {
-    const demoPasswordHash = bcrypt.hashSync('MKMClient@2026!', 10);
-    await db.run(
-      `INSERT OR IGNORE INTO User (id, name, phone, whatsapp, email, passwordHash, role, status, notes, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        crypto.randomUUID(),
-        'Karthik Sundaram (Approved Client)',
-        '9840123456',
-        '9840123456',
-        'demo@mkmproperties.com',
-        demoPasswordHash,
-        'user',
-        'APPROVED',
-        'Pre-approved sample client for property inspection and document access.',
-        now,
-        now
-      ]
-    );
+  // 2. Optional demo account seeding (only when explicitly enabled via SEED_DEMO_ACCOUNT=true)
+  if (process.env.SEED_DEMO_ACCOUNT === 'true') {
+    const demoEmail = process.env.DEMO_CLIENT_EMAIL;
+    const demoPassword = process.env.DEMO_CLIENT_PASSWORD;
+    if (demoEmail && demoPassword) {
+      const existingDemo = await db.get<UserRecord>('SELECT * FROM User WHERE email = ?', [demoEmail.trim().toLowerCase()]);
+      if (!existingDemo) {
+        const demoPasswordHash = bcrypt.hashSync(demoPassword, 12);
+        await db.run(
+          `INSERT OR IGNORE INTO User (id, name, phone, whatsapp, email, passwordHash, role, status, notes, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            crypto.randomUUID(),
+            'Demo Client',
+            '9840123456',
+            '9840123456',
+            demoEmail.trim().toLowerCase(),
+            demoPasswordHash,
+            'user',
+            'APPROVED',
+            'Seeded demo client account.',
+            now,
+            now
+          ]
+        );
+      }
+    }
   }
 
   // 3. Ensure projects are seeded
@@ -569,6 +589,12 @@ export async function createProject(data: Omit<ProjectRecord, 'id' | 'createdAt'
   return getProjectById(id);
 }
 
+const ALLOWED_PROJECT_COLUMNS = new Set([
+  'name', 'slug', 'location', 'description', 'coverImageUrl', 'galleryUrls',
+  'videoUrl', 'brochureUrl', 'priceLabel', 'approvalStatus', 'availabilityStatus',
+  'isPublished', 'plotSizes', 'roadAccess', 'nearbyLandmarks', 'amenities', 'mapUrl', 'priceBrochureUrl'
+]);
+
 export async function updateProject(id: string, data: Partial<ProjectRecord>) {
   const db = getDatabase();
   const now = new Date().toISOString();
@@ -577,8 +603,16 @@ export async function updateProject(id: string, data: Partial<ProjectRecord>) {
 
   for (const [key, val] of Object.entries(data)) {
     if (key === 'id' || key === 'createdAt') continue;
+    if (!ALLOWED_PROJECT_COLUMNS.has(key)) {
+      console.warn(`[Security Alert] Blocked attempt to update unpermitted Project column: ${key}`);
+      continue;
+    }
     fields.push(`${key} = ?`);
     params.push(val);
+  }
+
+  if (fields.length === 0) {
+    return getProjectById(id);
   }
 
   fields.push('updatedAt = ?');
@@ -810,8 +844,23 @@ export async function createUser(data: {
     ]
   );
 
-  return getUserById(id);
+  return getUserByIdSafe(id);
 }
+
+export type SafeUserRecord = Omit<UserRecord, 'passwordHash'>;
+
+export async function getUserByIdSafe(id: string): Promise<SafeUserRecord | null> {
+  await ensureSeeded();
+  const db = getDatabase();
+  return db.get<SafeUserRecord>(
+    'SELECT id, name, phone, whatsapp, email, role, status, enquiryId, notes, createdAt, updatedAt FROM User WHERE id = ?',
+    [id]
+  );
+}
+
+const ALLOWED_USER_COLUMNS = new Set([
+  'name', 'phone', 'whatsapp', 'email', 'passwordHash', 'role', 'status', 'enquiryId', 'notes'
+]);
 
 export async function updateUser(id: string, updates: Partial<UserRecord>) {
   const db = getDatabase();
@@ -821,8 +870,16 @@ export async function updateUser(id: string, updates: Partial<UserRecord>) {
 
   for (const [key, val] of Object.entries(updates)) {
     if (key === 'id' || key === 'createdAt') continue;
+    if (!ALLOWED_USER_COLUMNS.has(key)) {
+      console.warn(`[Security Alert] Blocked attempt to update unpermitted User column: ${key}`);
+      continue;
+    }
     fields.push(`${key} = ?`);
     params.push(val);
+  }
+
+  if (fields.length === 0) {
+    return getUserByIdSafe(id);
   }
 
   fields.push('updatedAt = ?');
@@ -830,7 +887,7 @@ export async function updateUser(id: string, updates: Partial<UserRecord>) {
   params.push(id);
 
   await db.run(`UPDATE User SET ${fields.join(', ')} WHERE id = ?`, params);
-  return getUserById(id);
+  return getUserByIdSafe(id);
 }
 
 export async function deleteUser(id: string) {
@@ -841,11 +898,15 @@ export async function deleteUser(id: string) {
 /**
  * Approve a Lead and automatically create or activate their customer portal account.
  */
-export async function approveLeadToUser(enquiryId: string, initialPassword = 'MKMClient@2026!') {
+export async function approveLeadToUser(enquiryId: string, initialPassword?: string) {
   const enquiry = await getEnquiryById(enquiryId);
   if (!enquiry) {
     throw new Error('Enquiry not found');
   }
+
+  const generatedPassword = initialPassword && initialPassword.length >= 8
+    ? initialPassword
+    : `MKM_${crypto.randomBytes(4).toString('hex')}!`;
 
   const db = getDatabase();
   const now = new Date().toISOString();
@@ -871,7 +932,7 @@ export async function approveLeadToUser(enquiryId: string, initialPassword = 'MK
     userId = existingUser.id;
   } else {
     // Create new approved user account
-    const passwordHash = bcrypt.hashSync(initialPassword, 10);
+    const passwordHash = bcrypt.hashSync(generatedPassword, 12);
     userId = crypto.randomUUID();
     await db.run(
       `INSERT INTO User (id, name, phone, whatsapp, email, passwordHash, role, status, enquiryId, notes, createdAt, updatedAt)
@@ -891,23 +952,23 @@ export async function approveLeadToUser(enquiryId: string, initialPassword = 'MK
     );
   }
 
-  // Update enquiry status to SCHEDULED or APPROVED
+  // Update enquiry status to APPROVED
   await db.run(
     `UPDATE Enquiry SET status = 'APPROVED', approvedUserId = ?, updatedAt = ? WHERE id = ?`,
     [userId, now, enquiry.id]
   );
 
-  // Add follow-up note
+  // Add follow-up note (NEVER leak plaintext password in notes)
   await addFollowUp(
     enquiry.id,
-    `Lead approved by Admin. Portal access granted to account: ${userEmail}. Default Password: ${initialPassword}`
+    `Lead approved by Admin. Client portal access activated for account: ${userEmail}.`
   );
 
   return {
     success: true,
     userId,
     userEmail,
-    initialPassword,
+    initialPassword: generatedPassword,
     userName: enquiry.name
   };
 }
@@ -990,6 +1051,10 @@ export async function createDocument(data: {
   return getDocumentById(id);
 }
 
+const ALLOWED_DOCUMENT_COLUMNS = new Set([
+  'title', 'description', 'category', 'fileUrl', 'fileSize', 'fileType', 'projectId', 'isProtected'
+]);
+
 export async function updateDocument(id: string, updates: Partial<DocumentRecord>) {
   const db = getDatabase();
   const now = new Date().toISOString();
@@ -998,8 +1063,16 @@ export async function updateDocument(id: string, updates: Partial<DocumentRecord
 
   for (const [key, val] of Object.entries(updates)) {
     if (key === 'id' || key === 'createdAt') continue;
+    if (!ALLOWED_DOCUMENT_COLUMNS.has(key)) {
+      console.warn(`[Security Alert] Blocked attempt to update unpermitted Document column: ${key}`);
+      continue;
+    }
     fields.push(`${key} = ?`);
     params.push(val);
+  }
+
+  if (fields.length === 0) {
+    return getDocumentById(id);
   }
 
   fields.push('updatedAt = ?');

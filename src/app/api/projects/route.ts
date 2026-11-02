@@ -1,11 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllProjects, createProject } from '@/lib/db/repository';
 import { getUserSession, getAdminSession } from '@/lib/auth/session';
+import { logSecurityEvent } from '@/lib/security/audit';
+import { getClientIp } from '@/lib/security/rateLimit';
 
 export async function GET(req: NextRequest) {
+  const ip = getClientIp(req);
   // Enforce server-side authorization: Never expose private property information through public APIs!
   const userSession = await getUserSession();
   if (!userSession || (userSession.status !== 'APPROVED' && userSession.role !== 'admin')) {
+    await logSecurityEvent({
+      eventType: 'ACCESS_DENIED',
+      severity: 'WARN',
+      ipAddress: ip,
+      details: { endpoint: '/api/projects', method: 'GET' },
+      status: 'BLOCKED'
+    });
     return NextResponse.json(
       { success: false, error: 'Unauthorized: Complete project portfolio is restricted to authorized clients.' },
       { status: 403 }
@@ -31,6 +41,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const session = await getAdminSession();
+  const ip = getClientIp(req);
   if (!session) {
     return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
   }
@@ -82,6 +93,16 @@ export async function POST(req: NextRequest) {
       nearbyLandmarks: nearbyLandmarks || null,
       amenities: typeof amenities === 'string' ? amenities : JSON.stringify(amenities || []),
       mapUrl: mapUrl || null
+    });
+
+    await logSecurityEvent({
+      eventType: 'USER_ROLE_CHANGE',
+      severity: 'INFO',
+      actorId: session.id,
+      actorEmail: session.email,
+      ipAddress: ip,
+      details: { action: 'create_project', projectId: created?.id, slug: created?.slug },
+      status: 'SUCCESS'
     });
 
     return NextResponse.json({ success: true, project: created });

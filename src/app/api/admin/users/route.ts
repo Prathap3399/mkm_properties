@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { getAdminSession } from '@/lib/auth/session';
 import { getAllUsers, createUser, getUserByEmail, getUserByPhone } from '@/lib/db/repository';
+import { logSecurityEvent } from '@/lib/security/audit';
+import { getClientIp } from '@/lib/security/rateLimit';
 
 export async function GET(req: NextRequest) {
   const session = await getAdminSession();
@@ -20,6 +22,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const session = await getAdminSession();
+  const ip = getClientIp(req);
+
   if (!session) {
     return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
   }
@@ -35,6 +39,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (password.length < 8) {
+      return NextResponse.json(
+        { success: false, error: 'Password must be at least 8 characters long' },
+        { status: 400 }
+      );
+    }
+
     const cleanEmail = email.trim().toLowerCase();
     const existing = await getUserByEmail(cleanEmail);
     if (existing) {
@@ -44,21 +55,41 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const passwordHash = await bcrypt.hash(password, 10);
+    const cleanPhone = phone.trim();
+    const existingPhone = await getUserByPhone(cleanPhone);
+    if (existingPhone) {
+      return NextResponse.json(
+        { success: false, error: 'User with this mobile number already exists' },
+        { status: 409 }
+      );
+    }
+
+    const passwordHash = await bcrypt.hash(password, 12);
 
     const newUser = await createUser({
       name: name.trim(),
       email: cleanEmail,
-      phone: phone.trim(),
-      whatsapp: whatsapp || phone.trim(),
+      phone: cleanPhone,
+      whatsapp: whatsapp || cleanPhone,
       passwordHash,
-      role: role || 'user',
+      role: role === 'admin' ? 'admin' : 'user',
       status: status || 'APPROVED',
       notes: notes || 'Created manually by Admin'
     });
 
+    await logSecurityEvent({
+      eventType: 'AUTH_REGISTER',
+      severity: 'INFO',
+      actorId: session.id,
+      actorEmail: session.email,
+      ipAddress: ip,
+      details: { action: 'admin_create_user', targetEmail: cleanEmail, assignedRole: role || 'user' },
+      status: 'SUCCESS'
+    });
+
     return NextResponse.json({ success: true, user: newUser });
   } catch (err: any) {
+    console.error('[Admin User Create] Error:', err.message);
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
 }

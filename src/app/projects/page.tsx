@@ -2,8 +2,9 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { connection } from 'next/server';
 import { getAllProjects } from '@/lib/db/repository';
+import { requireApprovedUser } from '@/lib/auth/session';
 import ProjectsCatalogClient from '@/components/projects/ProjectsCatalogClient';
-import { Phone, Compass } from 'lucide-react';
+import { Phone, Compass, ShieldCheck } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Residential Layouts & Projects Portfolio · MKM Properties | Trichy',
@@ -15,6 +16,9 @@ export const instant = false;
 
 export default async function ProjectsPage() {
   await connection();
+  // Enforce server-side authorization check!
+  await requireApprovedUser('/login?unauthorized=true&redirect=/projects');
+
   const projects = await getAllProjects({ publishedOnly: true });
 
   return (
@@ -36,10 +40,16 @@ export default async function ProjectsPage() {
               </p>
             </div>
 
-            <a href="tel:9629048171" className="btn btn-primary shrink-0 self-start md:self-auto">
-              <Phone className="h-4 w-4 text-[var(--gold-bright)]" />
-              <span>Advisor Call: 96290 48171</span>
-            </a>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-100/80 border border-emerald-300 text-xs font-bold text-emerald-900">
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-700" />
+                <span>Authorized Client Access</span>
+              </div>
+              <a href="tel:9629048171" className="btn btn-primary shrink-0 self-start md:self-auto">
+                <Phone className="h-4 w-4 text-[var(--gold-bright)]" />
+                <span>Advisor Call: 96290 48171</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>

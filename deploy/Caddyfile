@@ -1,0 +1,44 @@
+# ==============================================================================
+# MKM Properties - Production Caddy Reverse Proxy Configuration
+# Automatic SSL/TLS with Let's Encrypt, HTTP/3, and Hardened Security Headers
+# ==============================================================================
+
+# Replace your-domain.com with your actual production domain (e.g., mkmproperties.com)
+{$APP_DOMAIN:mkmproperties.com} {
+    # Reverse proxy to the Next.js container or local Node process
+    reverse_proxy 127.0.0.1:3000 {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    # Enable modern compression algorithms
+    encode zstd gzip
+
+    # Production Security Headers
+    header {
+        Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+        -Server
+    }
+
+    # Request body size limit (Max 20MB for brochure uploads)
+    request_body {
+        max_size 20MB
+    }
+
+    # Access and Error Logging
+    log {
+        output file /var/log/caddy/mkm_access.log {
+            roll_size 50mb
+            roll_keep 10
+            roll_keep_for 720h
+        }
+        format json
+    }
+}
+

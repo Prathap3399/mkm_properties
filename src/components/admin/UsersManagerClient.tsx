@@ -41,7 +41,7 @@ export default function UsersManagerClient({ initialUsers }: Props) {
   const [newEmail, setNewEmail] = useState('');
   const [newPhone, setNewPhone] = useState('');
   const [newRole, setNewRole] = useState<'user' | 'admin'>('user');
-  const [newUserPass, setNewUserPass] = useState('MKMClient@2026!');
+  const [newUserPass, setNewUserPass] = useState('');
   const [createError, setCreateError] = useState<string | null>(null);
 
   const filtered = users.filter((u) => {
@@ -380,13 +380,26 @@ export default function UsersManagerClient({ initialUsers }: Props) {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Default Password</label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="font-bold text-slate-700">Account Password</label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+                        setNewUserPass(`Mkm_${random}!${Math.floor(10 + Math.random() * 89)}`);
+                      }}
+                      className="text-[10px] text-emerald-800 hover:underline font-bold"
+                    >
+                      Generate Secure Password
+                    </button>
+                  </div>
                   <input
                     type="text"
                     required
+                    placeholder="Minimum 8 characters"
                     value={newUserPass}
                     onChange={(e) => setNewUserPass(e.target.value)}
-                    className="w-full p-2 rounded-lg border border-slate-200 bg-slate-50 font-mono text-slate-800"
+                    className="w-full p-2 rounded-lg border border-slate-200 bg-slate-50 font-mono text-slate-800 text-xs"
                   />
                 </div>
               </div>

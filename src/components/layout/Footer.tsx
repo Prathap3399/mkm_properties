@@ -146,6 +146,20 @@ export default function Footer() {
                 <span>Instant WhatsApp Chat</span>
               </a>
 
+              <a
+                href="https://www.instagram.com/MKM_Properties_Trichy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 text-pink-400 hover:text-pink-300 transition-colors"
+              >
+                <svg className="h-4 w-4 text-pink-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                </svg>
+                <span>@MKM_Properties_Trichy</span>
+              </a>
+
               <div className="flex items-center gap-2.5 text-slate-300">
                 <Mail className="h-4 w-4 text-[#D9A838] shrink-0" />
                 <span className="text-xs">advisor@mkmproperties.com</span>
@@ -172,6 +186,19 @@ export default function Footer() {
         <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400">
           <p>© 2026 MKM Properties. All rights reserved. Tiruchirappalli, Tamil Nadu.</p>
           <div className="flex items-center gap-6">
+            <a
+              href="https://www.instagram.com/MKM_Properties_Trichy/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-pink-400 transition-colors flex items-center gap-1.5"
+            >
+              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+              <span>Instagram</span>
+            </a>
             <Link href="/privacy" className="hover:text-white transition-colors">
               Privacy Policy
             </Link>

@@ -5,33 +5,21 @@ import { sendEnquiryNotification } from '@/lib/email/resend';
 import { sendMetaCapiEvent } from '@/lib/analytics/meta';
 import { getAdminSession } from '@/lib/auth/session';
 
-// Simple in-memory rate limiter for serverless environment
-const rateLimitMap = new Map<string, { count: number; firstSeen: number }>();
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const windowMs = 60 * 1000; // 1 minute
-  const maxRequests = 5;
-
-  const record = rateLimitMap.get(ip);
-  if (!record) {
-    rateLimitMap.set(ip, { count: 1, firstSeen: now });
-    return false;
-  }
-
-  if (now - record.firstSeen > windowMs) {
-    rateLimitMap.set(ip, { count: 1, firstSeen: now });
-    return false;
-  }
-
-  record.count += 1;
-  return record.count > maxRequests;
-}
+import { getClientIp, checkRateLimit, RATE_LIMITS } from '@/lib/security/rateLimit';
+import { logSecurityEvent } from '@/lib/security/audit';
 
 export async function POST(req: NextRequest) {
   try {
-    const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || '127.0.0.1';
-    if (isRateLimited(ip)) {
+    const ip = getClientIp(req);
+    const rateLimit = checkRateLimit(ip, RATE_LIMITS.ENQUIRY);
+    if (!rateLimit.allowed) {
+      await logSecurityEvent({
+        eventType: 'RATE_LIMIT_TRIGGERED',
+        severity: 'WARN',
+        ipAddress: ip,
+        details: { endpoint: '/api/enquiries', retryAfterSeconds: rateLimit.retryAfterSeconds },
+        status: 'BLOCKED'
+      });
       return NextResponse.json(
         { success: false, error: 'Too many requests. Please wait a minute or call 9629048171 directly.' },
         { status: 429 }

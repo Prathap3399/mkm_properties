@@ -75,7 +75,7 @@ export default function AdminLoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@mkmproperties.com"
+                  placeholder="Enter administrator email"
                   className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0b4632]/20 focus:border-[#0b4632]"
                 />
               </div>
@@ -97,17 +97,12 @@ export default function AdminLoginPage() {
                 />
               </div>
             </div>
-
-            {/* Quick Demo Credentials Reminder Box */}
-            <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200/80 text-xs text-slate-700 space-y-1">
-              <p className="font-bold text-[#0b4632] flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#c59b27]" />
-                Initial Admin Credentials:
-              </p>
-              <p className="text-[11px] font-mono text-slate-600">
-                Email: <strong>admin@mkmproperties.com</strong><br />
-                Password: <strong>MkmTrichy@2026!</strong>
-              </p>
+            {/* Security Notice */}
+            <div className="p-3 bg-emerald-50/70 rounded-xl border border-emerald-200/80 text-xs text-slate-700 flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-800 shrink-0" />
+              <span className="text-[11px] text-slate-600">
+                Authorized administrative personnel only. All access attempts are monitored and logged.
+              </span>
             </div>
 
             <button

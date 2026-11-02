@@ -132,6 +132,30 @@ export default function ContactPage() {
                     </div>
                   </div>
 
+                  {/* Instagram */}
+                  <div className="flex items-start gap-3.5">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-pink-50 text-pink-600">
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                      </svg>
+                    </span>
+                    <div>
+                      <span className="text-xs font-mono uppercase tracking-wider text-slate-400 block font-bold">
+                        Instagram
+                      </span>
+                      <a
+                        href="https://www.instagram.com/MKM_Properties_Trichy/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-pink-700 hover:text-pink-900"
+                      >
+                        @MKM_Properties_Trichy
+                      </a>
+                    </div>
+                  </div>
+
                   {/* Office Address */}
                   <div className="flex items-start gap-3.5">
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-slate-100 text-[#0B271F]">

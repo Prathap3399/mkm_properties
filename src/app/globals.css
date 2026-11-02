@@ -6,6 +6,13 @@
    ========================================================================== */
 
 :root {
+  /* Font Families */
+  --font-jakarta: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-outfit: 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-fraunces: 'Fraunces', Georgia, serif;
+  --font-plex-mono: 'IBM Plex Mono', monospace;
+
   /* Surfaces */
   --paper: #f8fafb;
   --paper-2: #f1f5f4;

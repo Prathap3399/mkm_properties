@@ -1,0 +1,59 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mkm-properties-app
+    restart: unless-stopped
+    ports:
+      # Bind to 127.0.0.1:3000 so external traffic only reaches the app through the reverse proxy (Nginx/Caddy)
+      - "127.0.0.1:3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+      - NEXT_OUTPUT_STANDALONE=true
+    env_file:
+      - .env.production
+    volumes:
+      # Persistent SQLite Database & WAL logs
+      - ./data:/app/data
+      # Persistent uploaded project brochures and layout documents
+      - ./public/brochures:/app/public/brochures
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "sqlite3", "/app/data/mkm_properties.db", "SELECT 1;"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  # Optional production reverse proxy with automated SSL (Let's Encrypt)
+  # Uncomment if running Caddy alongside the app:
+  # caddy:
+  #   image: caddy:2-alpine
+  #   container_name: mkm-properties-caddy
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./deploy/Caddyfile:/etc/caddy/Caddyfile
+  #     - caddy_data:/data
+  #     - caddy_config:/config
+  #   depends_on:
+  #     - app
+
+# volumes:
+#   caddy_data:
+#   caddy_config:
+

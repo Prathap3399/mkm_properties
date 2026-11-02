@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { connection } from 'next/server';
 import { getProjectBySlug, getAllProjects } from '@/lib/db/repository';
+import { requireApprovedUser } from '@/lib/auth/session';
 import ProjectVideo from '@/components/projects/ProjectVideo';
 import BrochureViewer from '@/components/projects/BrochureViewer';
 import EnquiryForm from '@/components/enquiry/EnquiryForm';
@@ -82,11 +83,17 @@ function PanelHeading({
 
 export default async function ProjectDetailPage({ params }: Props) {
   await connection();
+  const session = await requireApprovedUser(`/login?unauthorized=true&redirect=/projects`);
   const { slug } = await params;
 
   const project = await getProjectBySlug(slug);
 
-  if (!project || project.isPublished === 0) {
+  if (!project) {
+    notFound();
+  }
+
+  // Unpublished project is only visible to administrator
+  if (project.isPublished === 0 && session.role !== 'admin') {
     notFound();
   }
 

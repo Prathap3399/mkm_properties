@@ -1,0 +1,28 @@
+[Unit]
+Description=MKM Properties Next.js Application
+After=network.target
+
+[Service]
+Type=simple
+User=mkm
+WorkingDirectory=/var/www/mkmproperties
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=HOSTNAME=127.0.0.1
+EnvironmentFile=/var/www/mkmproperties/.env.production
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=mkm-properties
+
+# Security sandbox restrictions
+ProtectSystem=full
+ProtectHome=true
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+
