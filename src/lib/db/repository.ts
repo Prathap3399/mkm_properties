@@ -436,7 +436,6 @@ export async function ensureSeeded() {
           contactPerson: 'PRATHAP (Senior Property Advisor)',
           phone: '9629048171',
           whatsapp: '9629048171',
-          email: 'advisor@mkmproperties.com',
           address: 'Cantonment, Trichy',
           googleMapsUrl: 'https://maps.google.com/?q=Tiruchirappalli,Tamil+Nadu',
           businessHours: 'Monday – Sunday: 8:00 AM – 8:00 PM'

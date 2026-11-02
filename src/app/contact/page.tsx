@@ -3,7 +3,6 @@ import Link from 'next/link';
 import {
   Phone,
   MessageSquare,
-  Mail,
   MapPin,
   Clock,
   Car,
@@ -110,24 +109,6 @@ export default function ContactPage() {
                         className="font-semibold text-emerald-800 hover:underline"
                       >
                         +91 96290 48171 (Instant Chat)
-                      </a>
-                    </div>
-                  </div>
-
-                  {/* Email */}
-                  <div className="flex items-start gap-3.5">
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-slate-100 text-[#0B271F]">
-                      <Mail className="h-4 w-4" />
-                    </span>
-                    <div>
-                      <span className="text-xs font-mono uppercase tracking-wider text-slate-400 block font-bold">
-                        Official Email
-                      </span>
-                      <a
-                        href="mailto:advisor@mkmproperties.com"
-                        className="font-medium text-slate-800 hover:text-[#0B271F]"
-                      >
-                        advisor@mkmproperties.com
                       </a>
                     </div>
                   </div>

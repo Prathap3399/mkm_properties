@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Phone, MapPin, ShieldCheck, Mail, MessageSquare, ArrowUpRight, CheckCircle2 } from 'lucide-react';
+import { Phone, MapPin, ShieldCheck, MessageSquare, ArrowUpRight, CheckCircle2 } from 'lucide-react';
 
 const WHATSAPP_URL =
   'https://wa.me/919629048171?text=Hello%20MKM%20Properties,%20I%20would%20like%20to%20know%20more%20about%20residential%20plots%20in%20Trichy.';
@@ -159,11 +159,6 @@ export default function Footer() {
                 </svg>
                 <span>@mkm.properties_trichy</span>
               </a>
-
-              <div className="flex items-center gap-2.5 text-slate-300">
-                <Mail className="h-4 w-4 text-[#D9A838] shrink-0" />
-                <span className="text-xs">advisor@mkmproperties.com</span>
-              </div>
 
               <div className="flex items-start gap-2.5 text-slate-300">
                 <MapPin className="h-4 w-4 text-[#D9A838] shrink-0 mt-0.5" />
