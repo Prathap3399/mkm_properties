@@ -146,12 +146,12 @@ export default function ContactPage() {
                         Instagram
                       </span>
                       <a
-                        href="https://www.instagram.com/MKM_Properties_Trichy/"
+                        href="https://www.instagram.com/mkm.properties_trichy?utm_source=qr&obrf=MWR2d3k4bnBqd3pzOA%3D%3D"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="font-medium text-pink-700 hover:text-pink-900"
                       >
-                        @MKM_Properties_Trichy
+                        @mkm.properties_trichy
                       </a>
                     </div>
                   </div>

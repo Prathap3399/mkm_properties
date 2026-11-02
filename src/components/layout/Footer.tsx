@@ -147,7 +147,7 @@ export default function Footer() {
               </a>
 
               <a
-                href="https://www.instagram.com/MKM_Properties_Trichy/"
+                href="https://www.instagram.com/mkm.properties_trichy?utm_source=qr&obrf=MWR2d3k4bnBqd3pzOA%3D%3D"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2.5 text-pink-400 hover:text-pink-300 transition-colors"
@@ -157,7 +157,7 @@ export default function Footer() {
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
                 </svg>
-                <span>@MKM_Properties_Trichy</span>
+                <span>@mkm.properties_trichy</span>
               </a>
 
               <div className="flex items-center gap-2.5 text-slate-300">
@@ -187,7 +187,7 @@ export default function Footer() {
           <p>© 2026 MKM Properties. All rights reserved. Tiruchirappalli, Tamil Nadu.</p>
           <div className="flex items-center gap-6">
             <a
-              href="https://www.instagram.com/MKM_Properties_Trichy/"
+              href="https://www.instagram.com/mkm.properties_trichy?utm_source=qr&obrf=MWR2d3k4bnBqd3pzOA%3D%3D"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-pink-400 transition-colors flex items-center gap-1.5"
