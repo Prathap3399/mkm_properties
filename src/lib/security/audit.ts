@@ -14,7 +14,8 @@ export type SecurityEventType =
   | 'RATE_LIMIT_TRIGGERED'
   | 'SQL_INJECTION_BLOCKED'
   | 'UNAUTHORIZED_FILE_ACCESS'
-  | 'FILE_UPLOAD_BLOCKED';
+  | 'FILE_UPLOAD_BLOCKED'
+  | 'ENQUIRY_CREATED';
 
 export type SecuritySeverity = 'INFO' | 'WARN' | 'CRITICAL';
 
