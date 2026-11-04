@@ -96,6 +96,21 @@ export async function POST(req: NextRequest) {
       throw new Error('Failed to save site visit enquiry');
     }
 
+    // 5b. Log enquiry creation in audit trail
+    await logSecurityEvent({
+      eventType: 'ENQUIRY_CREATED',
+      severity: 'INFO',
+      ipAddress: ip,
+      details: {
+        enquiryId: savedEnquiry.id,
+        name: savedEnquiry.name,
+        phone: savedEnquiry.phone,
+        preferredLocation: savedEnquiry.preferredLocation,
+        preferredVisitDate: savedEnquiry.preferredVisitDate
+      },
+      status: 'SUCCESS'
+    });
+
     // 6. Secondary Action A: Trigger Email Notification (error resilient)
     try {
       await sendEnquiryNotification({
@@ -107,8 +122,9 @@ export async function POST(req: NextRequest) {
         purpose: savedEnquiry.purpose,
         budget: savedEnquiry.budget,
         preferredLocation: savedEnquiry.preferredLocation,
-        purchaseTimeline: savedEnquiry.preferredTime,
+        purchaseTimeline: savedEnquiry.purchaseTimeline,
         preferredVisitDate: savedEnquiry.preferredVisitDate,
+        preferredTime: savedEnquiry.preferredTime,
         message: savedEnquiry.additionalRequirements || savedEnquiry.message,
         utmSource: savedEnquiry.utmSource,
         utmMedium: savedEnquiry.utmMedium,
